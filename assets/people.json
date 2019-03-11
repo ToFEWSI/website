@@ -1,0 +1,58 @@
+{
+
+    "Allan": {
+        "id": 1,
+        "FullName": "Dr Allan Spessa",
+        "Affiliation": "Project Principall Investigator",
+        "Institution": "Swansea University",
+        "bio": "An expert in wildfire modelling and ..."
+
+    },
+
+    "Tadas": {
+        "id": 2,
+        "FullName": "Dr Tadas Nikonovas",
+        "Affiliation": "Research Officer",
+        "Institution": "Swansea University",
+        "bio": "Specializes in satellite observations of fire activity, emission estimation and numerical modelling."
+   },
+
+    "Gareth": {
+        "id": 3,
+        "FullName": "Dr Gareth Clay",
+        "Affiliation": "Co-Investigator",
+        "Institution": "The University of Manchester",
+        "bio": "An Expert in peatlands and outreach..."
+   },
+    "Armi": {
+        "id": 4,
+        "FullName": "Dr Armi Susandi",
+        "Affiliation": "Co-Investigator",
+        "Institution": "Bandung Institute of Technology",
+        "bio": "An Expert in meteorology and climate data downscaling."
+   },
+
+    "Imron": {
+        "id": 5,
+        "FullName": "Dr Muhammad Ali Imron",
+        "Affiliation": "Co-Investigator",
+        "Institution": "University of Gadjah Mada",
+        "bio": "Specializes in ecological agent-based modelling."
+   },
+    "Symon": {
+        "id": 6,
+        "FullName": "Dr Symon Mezbahudin",
+        "Affiliation": "Consultant",
+        "Institution": "University of Alberta",
+        "bio": "An expert in peatland hydrological modelling."
+   },
+    "Dodik": {
+        "id": 7,
+        "FullName": "Dr Dodik Nurrochmat",
+        "Affiliation": "Co-Investigator",
+        "Institution": "Bogor Agricultural University",
+        "bio": "An expert in."
+   }
+
+
+}
