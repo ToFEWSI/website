@@ -30,7 +30,8 @@
     "postcss-preset-env": "^6.5.0",
     "thrift": "^0.12.0",
     "tls": "0.0.1",
-    "topojson-client": "^3.0.0"
+    "topojson-client": "^3.0.0",
+    "v-click-outside": "^2.0.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

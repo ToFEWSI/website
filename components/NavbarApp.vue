@@ -3,7 +3,7 @@
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
         <h1 class="is-size-5">
-          <strong>ToFEWSI </strong><i class="fas fa-home" />
+          <strong>ToFEWSI</strong>
         </h1>
       </nuxt-link>
       <a

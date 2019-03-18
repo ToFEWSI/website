@@ -1,5 +1,5 @@
 <template>
-  <div class="block">
+  <div class="box">
     <svg
       ref="svg"
       class="pan-zoom"

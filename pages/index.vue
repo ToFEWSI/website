@@ -1,39 +1,28 @@
 <template>
-  <body>
+  <div>
     <section class="hero is-large bg">
       <div class="hero-body" />
-      <div class="hero-foot">
-        <div class="container has-text-centered">
-          <h1 class="title has-text-white is-size-1">
-            Project
-            To<span class="has-text-danger">F</span>E<span class="has-text-warning">W</span>SI
-          </h1>
-          <h2 class="subtitle has-text-white is-size-3">
-            Towards a  <span class="has-text-danger">Fire</span> Early <span class="has-text-warning">Warning</span> System for Indonesia
-          </h2>
-        </div>
+      <div class="container has-text-centered ">
+        <h1 class="title has-text-white has-text-weight-bold is-size-1">
+          Project
+          To<span class="has-text-warning">F</span>E<span class="has-text-warning">W</span>SI
+        </h1>
+        <h2 class="subtitle has-text-white has-text-weight-bold is-size-4">
+          Towards a <span class="has-text-warning">Fire</span> Early <span class="has-text-warning">Warning</span> System for Indonesia
+        </h2>
+        <br>
+        <br>
       </div>
     </section>
 
     <section class="section">
       <div class="container has-text-centered is-size-3">
-        <h1 class="title is-size-2">
-          Project
-          To<span class="has-text-danger">F</span>E<span class="has-text-danger">W</span>SI
-        </h1>
-        <h2 class="subtitle  has-text-grey is-size-3">
-          Towards a  <span class="has-text-danger">Fire</span> Early <span class="has-text-danger">Warning</span> System for Indonesia
-        </h2>
-        <br>
         <div class="content is-medium">
-          Extreme peat burning events in Indonesia, like the 2015 episode seen in the MODIS image of Sumatra and Borneo islands above, emit vast amounts of greenhouse gasses and have adverse effects on human health and ecosystems. ToFEWSI is developing a suite of climate-, hydrological- and agent-based modelling tools at landscape to regional-scales to predict the incidence of peat forest fires in Indonesia.  ToFEWSI will help Indonesia to reduce local fire impacts and regional haze pollution, and meet its commitments under the ASEAN Agreement on Transboundary Haze Pollution and the Paris Climate Agreement on emissions reduction. <a class="button is-primary is-outlined is-small">Read more</a>
+          Extreme peat burning events in Indonesia, like the 2015 episode seen in the MODIS image of Sumatra and Borneo islands above, emit vast amounts of greenhouse gasses and have adverse effects on human health and ecosystems. <strong>ToFEWSI</strong> is developing a suite of climate-, hydrological- and agent-based modelling tools at landscape to regional-scales to predict the incidence of peat forest fires in Indonesia. The project will help Indonesia to reduce local fire impacts and regional haze pollution, and meet its commitments under the ASEAN Agreement on Transboundary Haze Pollution and the Paris Climate Agreement on emissions reduction. <a class="button is-primary is-outlined is-small">Read more</a>
         </div>
-
-        <br>
-        <hr>
-      </div>
       </div>
     </section>
+    <hr>
     <section class="section">
       <div class="container has-text-centered is-size-3">
         <div class="content is-medium">
@@ -42,9 +31,8 @@
           </nuxt-link>
         </div>
       </div>
-      </div>
     </section>
-  </body>
+  </div>
 </template>
 <script>
 export default {}
