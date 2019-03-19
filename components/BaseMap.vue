@@ -9,8 +9,6 @@
       <!-- Inner Content -->
       <svg 
         style="overflow: hidden;"
-        width="100%"
-        height="100%"
         class="pan-content"
       >
 
@@ -69,8 +67,8 @@ export default {
       land: null,
       frp: [],
       dimensions: {
-        width: 610,
-        height: 225
+        width: 854,
+        height: 315
         // viewBox: '0 0 700 700'
       },
       probsp: [],
@@ -80,8 +78,8 @@ export default {
       zooming: false,
       watcher: null,
 
-      mapwidth: 610,
-      mapheight: 225,
+      mapwidth: 854,
+      mapheight: 315,
       translator: null,
       scaler: null,
       transform: {
@@ -232,6 +230,7 @@ export default {
         const bounds = (this.$refs.svg || this.$el).getBoundingClientRect()
         this.dimensions.width = bounds.width
         this.dimensions.height = bounds.height
+          console.log(bounds.width, bounds.height)
       })
     },
 
@@ -273,5 +272,10 @@ export default {
 
 div.block {
   border: 1px solid #404040;
+}
+
+div.box {
+  padding: 0px;
+  margin: 0px;
 }
 </style>

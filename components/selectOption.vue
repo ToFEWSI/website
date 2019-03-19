@@ -3,8 +3,8 @@
           <div class="control">
           <div class="select is-primary" 
               v-click-outside="hide">
-              <select v-model="selOption">
-                  <option v-for="option in options" @click="changeOption(option)">
+              <select v-model="selOption" @change="changeOption($event)">
+                  <option v-for="option in options" :value="option">
                   {{ option }}
                   </option>
               </select>
@@ -33,6 +33,7 @@ export default {
         }
     },
     mounted() {
+        console.log('selector mounted')
     },
 
     methods: {
@@ -42,8 +43,9 @@ export default {
         }
     },
     changeOption(option) {
-        console.log('option changed', option)
-        this.$emit('updateOption', option);
+        let value = option.target.value
+        console.log('option changed', value)
+        this.$emit('updateOption', value);
     }
     }
 }

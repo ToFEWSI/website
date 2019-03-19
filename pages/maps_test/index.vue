@@ -38,7 +38,7 @@
                          :selected="selectedModelRight"
                          @updateOption="selectedModelRight = $event"
                          ></select-option>
-          <base-m :zoom-transform.sync="zoomTransform" :datas="getRight" />
+          <base-m-test :zoom-transform.sync="zoomTransform" :datas="getRight" />
         </div>
       </div>
     </div>
@@ -49,6 +49,7 @@
 <script>
 import BaseMap from '@/components/BaseMap.vue'
 import BaseM from '@/components/BaseM.vue'
+import BaseMTest from '@/components/BaseM_test.vue'
 import selectOption from '@/components/selectOption.vue'
 import Probs from '@/assets/probdata.json'
 import lonLats from '@/assets/geo/lonlats_pdtest.json'
@@ -57,8 +58,10 @@ export default {
   components: {
     selectOption: selectOption,
     BaseMap: BaseMap,
-    BaseM: BaseM
+    BaseM: BaseM,
+    BaseMTest: BaseMTest,
   },
+
   data() {
     return {
         probs: {},

@@ -1,7 +1,8 @@
 <template>
     <div class="box"
-    >
-      <!-- Inner Content -->
+        :viewBox="viewBoxString"
+         >
+     <!-- Inner Content -->
       <svg 
         style="overflow: hidden;"
         width="100%"
@@ -9,26 +10,7 @@
         class="pan-zoom"
         :zoom-transform="zoomTransform"
         :datas="datas"
-        :viewBox="viewBoxString"
       >
-
-        <g v-bind="transformProp">
-          <path
-            fill="#808080"
-            stroke="white"
-            stroke-width="0.5"
-            :d="d()"
-          />
-          <rect 
-            v-for="(item, index) in coords"
-            :key="index"
-            :x="item[0]"
-            :y="item[1]"
-            width="3.4"
-            height="3.4"
-            :fill="colorA[index]"
-          />
-        </g>
       </svg>
     </div>
 </template>
@@ -63,7 +45,7 @@ export default {
       },
       transformProp: null,
       selection: null,
-      zooming: false,
+      zoomable: false,
       watcher: null,
 
       mapwidth: 610,
@@ -119,66 +101,32 @@ export default {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
 
-    this.watcher = this.$watch(
-        () => {
-          return {
-            w: this.dimensions.width,
-            h: this.dimensions.height,
-            k: this.zoomTransform.k,
-            x: this.zoomTransform.x,
-            y: this.zoomTransform.y
-          }
-        },
-        () => {
-          if (this.selection)
-            console.log('selection')
-            this.zoom.transform(this.selection, this.zoomTransform)
-        }
-      )
+    const svg = d3.select(this.$el).append('svg')
+          .attr('width', this.mapwidht)
+          .attr('height', this.mapheight)
+           .style("background-color", "#909090")
+    let g = null
+    let zoom = null
 
-    this.selection = d3.select(this.$el)
-    this.zoom.on('zoom', this.onZoom)
-    this.zoom.on('start', () => {
-      if (this.watcher) this.watcher()
-      this.zooming = true
-    })
-    this.zoom.on('end', () => {
-      this.zooming = false
-      this.watcher = this.$watch(
-        () => {
-          return {
-            w: this.dimensions.width,
-            h: this.dimensions.height,
-            k: this.zoomTransform.k,
-            x: this.zoomTransform.x,
-            y: this.zoomTransform.y
-          }
-        },
-        () => {
-          if (this.selection)
-            console.log('selection')
-            this.zoom.transform(this.selection, this.zoomTransform)
-        }
-      )
-    })
-    this.zoom(this.selection)
-  },
+    console.log(this.coords)
+    svg.append("g")
+      .selectAll(".square")
+      .data(this.coords)
+      .enter().append("rect")
+       .attr("class", "square")
+      .attr("x", function(d) { return (d[1][0]); })
+      .attr("y", function(d) { return (d[1][1]); })    
+      .attr("width", 3.4)
+      .attr("height", 5)
+      .style("fill", "#101919")
+      .style("stroke", "none");
 
-  Updated() {
-    this.onZoom()
-  },
-
-  beforeDestroy() {
-    if (this.watcher) this.watcher()
-    this.zoom.on('zoom', null)
-    window.removeEventListener('resize', this.updateDimensions)
-  },
-
-  activated() {
-    window.addEventListener('resize', this.updateDimensions)
-  },
-  deactivated() {
-    window.removeEventListener('resize', this.updateDimensions)
+    if (this.zoomable) {
+      g = svg.append('g')
+      zoom = d3.zoom().scaleExtent([0.9, 8]).on('zoom', this.zoomed(g))
+      svg.call(zoom).on('wheel', () => d3.event.preventDefault())
+      svg.call(zoom.transform, d3.zoomIdentity)
+    }
   },
 
   computed: {
@@ -196,14 +144,6 @@ export default {
         coordsNew[i] = this.projection(this.datas[i][1])
       }
       return coordsNew
-    },
-
-    getColorC: function() {
-      return this.colorScale(Math.random())
-    },
-
-    zoom() {
-      return zoom().scaleExtent([1, 3])
     },
 
     viewBoxString() {
