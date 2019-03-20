@@ -1,17 +1,8 @@
 <template>
     <div class="box"
-        :viewBox="viewBoxString"
+         id="map"
          >
      <!-- Inner Content -->
-      <svg 
-        style="overflow: hidden;"
-        width="100%"
-        height="100%"
-        class="pan-zoom"
-        :zoom-transform="zoomTransform"
-        :datas="datas"
-      >
-      </svg>
     </div>
 </template>
 
@@ -101,25 +92,29 @@ export default {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
 
-    const svg = d3.select(this.$el).append('svg')
-          .attr('width', this.mapwidht)
-          .attr('height', this.mapheight)
+    
+    console.log(this.dimensions.width)
+    console.log(this.dimensions.height)
+    const svg = d3.select('#map').append('svg')
+          .attr('width', this.dimensions.width)
+          .attr('height', this.dimensions.height)
            .style("background-color", "#909090")
+           
     let g = null
     let zoom = null
 
     console.log(this.coords)
-    svg.append("g")
-      .selectAll(".square")
-      .data(this.coords)
-      .enter().append("rect")
-       .attr("class", "square")
-      .attr("x", function(d) { return (d[1][0]); })
-      .attr("y", function(d) { return (d[1][1]); })    
-      .attr("width", 3.4)
-      .attr("height", 5)
-      .style("fill", "#101919")
-      .style("stroke", "none");
+    //svg.append("g")
+    //  .selectAll(".square")
+    //  .data(this.coords)
+     // .enter().append("rect")
+      // .attr("class", "square")
+    //  .attr("x", function(d) { return (d[1][0]); })
+    //  .attr("y", function(d) { return (d[1][1]); })    
+    //  .attr("width", 3.4)
+    //  .attr("height", 5)
+    //  .style("fill", "#101919")
+    //  .style("stroke", "none");
 
     if (this.zoomable) {
       g = svg.append('g')
@@ -161,9 +156,9 @@ export default {
   methods: {
 
     updateDimensions() {
-        const bounds = (this.$refs.svg || this.$el).getBoundingClientRect()
+        const bounds = (this.$refs.map || this.$el).getBoundingClientRect()
         this.dimensions.width = bounds.width
-        this.dimensions.height = bounds.height
+        this.dimensions.height = bounds.width / (this.mapwidth / this.mapheight)
     },
 
     onZoom() {

@@ -22,11 +22,11 @@
           <rect 
             v-for="(item, index) in coords"
             :key="index"
-            :x="item[0]"
-            :y="item[1]"
+            :x="item[0][0]"
+            :y="item[0][1]"
             width="3.4"
             height="3.4"
-            :fill="colorA[index]"
+            :fill="item[1]"
           />
         </g>
       </svg>
@@ -116,6 +116,7 @@ export default {
     this.projection = this.realProjection
 
     this.coords = this.reproject
+      console.log(this.coords)
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
 
@@ -137,6 +138,7 @@ export default {
       )
 
     this.selection = d3.select(this.$el)
+      console.log(this.selection)
     this.zoom.on('zoom', this.onZoom)
     this.zoom.on('start', () => {
       if (this.watcher) this.watcher()
@@ -156,7 +158,6 @@ export default {
         },
         () => {
           if (this.selection)
-            console.log('selection')
             this.zoom.transform(this.selection, this.zoomTransform)
         }
       )
@@ -191,9 +192,11 @@ export default {
     },
 
     reproject: function() {
-      const coordsNew = []
+      var coordsNew = []
       for (let i = 0; i < this.datas.length; i++) {
-        coordsNew[i] = this.projection(this.datas[i][1])
+        coordsNew[i] = []; // Initialize inner array
+            coordsNew[i][0] = this.projection(this.datas[i][1])
+            coordsNew[i][1] = this.colorScale(this.datas[i][0])
       }
       return coordsNew
     },

@@ -38,12 +38,12 @@
           </a>
 
           <div class="navbar-dropdown">
-            <nuxt-link to="/maps" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
+            <nuxt-link to="/forecasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
               Forecasts
             </nuxt-link>
 
-            <nuxt-link to="/maps_panzoom" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
-              Model compare
+            <nuxt-link to="/hindcasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
+            Hindcasts 
             </nuxt-link>
             <hr class="navbar-divider">
             <a class="navbar-item">

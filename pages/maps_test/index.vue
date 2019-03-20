@@ -74,8 +74,8 @@ export default {
             'October', 'November', 'December'
         ],
         modelOptions: [
-            {text: 'Neural Networks', value: 'NN', threshold: '50'},
-            {text: 'Maxent', value: 'Maxent', threshold: '50'},
+            {text: 'Neural Networks', value: 'NN', threshold: '1'},
+            {text: 'Maxent', value: 'Maxent', threshold: '1'},
             {text: 'SVC rbf', value: 'SVC', threshold: '1'},
             {text: 'Mean FRP', value: 'frp', threshold: '1'},
         ],
