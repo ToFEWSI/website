@@ -1,53 +1,56 @@
 <template>
-        <div class="field">
-          <div class="control">
-          <div class="select is-primary" 
-              v-click-outside="hide">
-              <select v-model="selOption" @change="changeOption($event)">
-                  <option v-for="option in options" :value="option">
-                  {{ option }}
-                  </option>
-              </select>
-          </div>
-        </div>
+    <div class="field">
+      <div class="control">
+      <div class="select is-primary" 
+          v-click-outside="hide">
+          <select v-model="selOption" @change="changeOption($event)">
+              <option v-for="option in options" :value="option">
+              {{ option }}
+              </option>
+          </select>
       </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import vClickOutside from 'v-click-outside'
 
 export default {
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
 
-    directives: {
-          clickOutside: vClickOutside.directive
-    },
+  props: {
+    options: Array,
+    selected: String
+  },
+  data() {
+    return {
+      selOption: this.selected,
+      isActive: false
+    }
+  },
+  mounted() {
+    console.log('selector mounted')
+  },
 
-    props: {
-        options: Array,
-        selected: String
-    },
-    data() {
-        return {
-            selOption: this.selected,
-            isActive: false,
-        }
-    },
-    mounted() {
-        console.log('selector mounted')
-    },
-
-    methods: {
+  methods: {
     hide() {
-        if (this.isActive) {
-            this.isActive = false
-        }
+      if (this.isActive) {
+        this.isActive = false
+      }
     },
     changeOption(option) {
-        let value = option.target.value
-        console.log('option changed', value)
-        this.$emit('updateOption', value);
+      let value = option.target.value
+      console.log('option changed', value)
+      this.$emit('updateOption', value)
     }
-    }
+  }
 }
 </script>
-    
+<style>
+.field {
+    display: inline-block;
+}
+</style>

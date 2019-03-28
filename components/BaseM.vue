@@ -116,7 +116,6 @@ export default {
     this.projection = this.realProjection
 
     this.coords = this.reproject
-      console.log(this.coords)
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
 
@@ -132,13 +131,11 @@ export default {
         },
         () => {
           if (this.selection)
-            console.log('selection')
             this.zoom.transform(this.selection, this.zoomTransform)
         }
       )
 
     this.selection = d3.select(this.$el)
-      console.log(this.selection)
     this.zoom.on('zoom', this.onZoom)
     this.zoom.on('start', () => {
       if (this.watcher) this.watcher()
