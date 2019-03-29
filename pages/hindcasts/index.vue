@@ -34,9 +34,7 @@
                          :selected="selectedModelLeft" 
                          @updateOption="selectedModelLeft = $event"
                          ></select-option>
-            <no-ssr placeholder="Loading...">
           <base-m :zoom-transform.sync="zoomTransform" :datas="getLeft" />
-              </no-ssr>
         </div>
         <div class="column">
           <h1>Select model or data:</h1>
@@ -45,9 +43,7 @@
                          @updateOption="selectedModelRight = $event"
                          ></select-option>
 
-            <no-ssr placeholder="Loading...">
           <base-m :zoom-transform.sync="zoomTransform" :datas="getRight" />
-              </no-ssr>
         </div>
       </div>
     </div>

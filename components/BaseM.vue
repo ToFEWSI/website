@@ -14,8 +14,8 @@
 
         <g v-bind="transformProp">
           <path
-            fill="#808080"
-            stroke="white"
+            fill="colorBack"
+            stroke="#505050"
             stroke-width="0.5"
             :d="d()"
           />
@@ -97,6 +97,7 @@ export default {
       .domain([1, 100])
     this.colorA = this.getColorA
     this.land = land
+    this.colorBack = this.colorScale(0)
 
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
