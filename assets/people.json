@@ -17,15 +17,25 @@
         "bio": "Specializes in satellite observations of fire activity, emission estimation and numerical modelling."
    },
 
-    "Gareth": {
+    "Stefan": {
         "id": 3,
+        "FullName": "Prof Stefan Doerr",
+        "Affiliation": "Co-Investigator",
+        "Institution": "Swansea University",
+        "bio": "An expert in global trends of wildfire occurrence."
+
+    },
+
+
+    "Gareth": {
+        "id": 4,
         "FullName": "Dr Gareth Clay",
         "Affiliation": "Co-Investigator",
         "Institution": "The University of Manchester",
         "bio": "An Expert in peatlands and outreach..."
    },
     "Armi": {
-        "id": 4,
+        "id": 5,
         "FullName": "Dr Armi Susandi",
         "Affiliation": "Co-Investigator",
         "Institution": "Bandung Institute of Technology",
@@ -33,21 +43,21 @@
    },
 
     "Imron": {
-        "id": 5,
+        "id": 6,
         "FullName": "Dr Muhammad Ali Imron",
         "Affiliation": "Co-Investigator",
         "Institution": "University of Gadjah Mada",
         "bio": "Specializes in ecological agent-based modelling."
    },
     "Symon": {
-        "id": 6,
+        "id": 7,
         "FullName": "Dr Symon Mezbahudin",
         "Affiliation": "Consultant",
         "Institution": "University of Alberta",
         "bio": "An expert in peatland hydrological modelling."
    },
     "Dodik": {
-        "id": 7,
+        "id": 8,
         "FullName": "Dr Dodik Nurrochmat",
         "Affiliation": "Co-Investigator",
         "Institution": "Bogor Agricultural University",
