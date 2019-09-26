@@ -34,21 +34,16 @@
 
         <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-link">
-            Data maps
+            Data products
           </a>
 
           <div class="navbar-dropdown">
-            <nuxt-link to="/forecasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
-              Forecasts
-            </nuxt-link>
-
             <nuxt-link to="/hindcasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
             Hindcasts 
             </nuxt-link>
-            <hr class="navbar-divider">
-            <a class="navbar-item">
-              Report an issue
-            </a>
+            <nuxt-link to="/forecasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
+              Forecasts
+            </nuxt-link>
           </div>
         </div>
       </div>

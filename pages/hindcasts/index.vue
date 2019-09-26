@@ -6,13 +6,20 @@
       </h1>
     </div>
 
-    <section class="section">
-      <div class="container has-text-centered is-size-3">
+  <section class="section">
+      <div class="container is-size-3">
         <div class="content is-medium">
-          Monthly fire occurrence probability on a 0.25 degree grid predicted by a range of different algorithms used in the <strong>ToFEWSI</strong> modelling analyses. Predictions are based on mean monthly fire weather index, drought index, fine fuel moisture content and forest cover change datasets. Select year, month and different models or input datasets to compare.
+            <p>
+            Monthly fire occurrence probability in Indonesia predicted by a range of machine learning methods. The probabilities are modeled at 25km spatial resolution and monthly time steps for 2002 - 2018 period. Fire activity is characterised by MODIS active fire detections. Any grid cell with more than 10 active fire detections withing a month is considered to contain a fire event.
+            </p>
+
+            <p>
+            Select year, month and fire occurrence probability given by different models or, MODIS active fires detection count or median fire weather indices. 
+            </p>
         </div>
       </div>
-    </section>
+
+  </section>
     <div class="container">
           <h1>Select year and month:</h1>
         <div class="form-group">
@@ -48,6 +55,25 @@
       </div>
     </div>
     </div>
+      <section class="section">
+    <div class="container">
+      <h2 class="title">
+        The method
+      </h2>
+    </div>
+
+
+      <section class="section">
+      <div class="container is-size-3">
+        <div class="content is-medium">
+            <p>
+            Supervised learning algorithms;<strong> logistic regression, Maxent, support vector machines and neural networks </strong> were trained to predict the probability of a grid cell having fire or not. Fire weather index, drought index and fine fuel moisture content features were calculated from ECMWF ERA5 reanalysis dataset using the Canadian fire weather index system. We have used monthly median, 0.75 quantiles and weekly running mean maximum values as features characterising fire weather conditions. Another important feature set was derived from the forest cover change dataset (Hansen et al., 2013, Science 342). These include fraction of primary and secondary forest loss in the grid cell and forest cover gain. We have also used mean grid cell elevation and peat depth information in the modelling.
+
+            </p>
+        </div>
+      </div>
+      </section>
+    </section>
   </section>
 </template>
 
@@ -68,10 +94,10 @@ export default {
     return {
         probs: {},
         ProbsAll: {},
-        selectedYear: '2010',
-        selectedMonth: 'August',
-        selectedModelLeft: 'SVC rbf',
-        selectedModelRight: 'FRP pixel count',
+        selectedYear: '2015',
+        selectedMonth: 'October',
+        selectedModelLeft: 'Support Vector Machines',
+        selectedModelRight: 'Active fires count',
         yearOptions: ['2002', '2003', '2004', '2005', '2006', '2007',
                       '2008', '2009', '2010', '2011', '2012', '2013',
                        '2014', '2015', '2016', '2017', '2018'],
@@ -85,8 +111,8 @@ export default {
             {text: 'Neural Networks', value: 'NN', threshold: '1'},
             {text: 'Logistic', value: 'Logistic', threshold: '1'},
             {text: 'Maxent', value: 'Maxent', threshold: '1'},
-            {text: 'SVC rbf', value: 'SVC', threshold: '1'},
-            {text: 'FRP pixel count', value: 'frp', threshold: '1'},
+            {text: 'Support Vector Machines', value: 'SVC', threshold: '1'},
+            {text: 'Active fires count', value: 'frp', threshold: '1'},
             {text: 'Median FWI', value: 'fwi', threshold: '-0.1'},
             {text: 'Median FFMC', value: 'ffmc', threshold: '1'},
             {text: 'Median DC', value: 'dc', threshold: '1'},

@@ -2,14 +2,21 @@
   <div class="card has-equal-height">
     <div class="card-content">
       <div class="media-content">
-        <p class="title is-4">
+        <div class="columns">
+          <div class="column is-four-fifths">
+            <div class="title is-4 ">
           {{ bio.FullName }}
-        </p>
+            </div>
+          </div>
+          <div class="column">
+            <a :href="`${bio.href}`" target="_blank"><div class="button is-primary is-outlined is-small nuxt-lind align-right" v-if="bio.href.length > 0">Website</div></a>
+          </div>
+        </div>
         <p class="subtitle is-6">
           {{ bio.Affiliation }} at {{ bio.Institution }}
         </p>
-      </div>
     </div>
+  </div>
     <div class="notification has-equal-height has-background-light">
       {{ bio.bio }}
     </div>
