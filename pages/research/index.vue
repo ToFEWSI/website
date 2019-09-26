@@ -10,7 +10,20 @@
         <div class="content is-medium">
             The project coordinates several interlinked research projects, all of which aim to improve knowledge of Indonesian peatland and forest fires.
 
+          <pdf src="assets/tadas_egu_2019.pdf"></pdf>
+
         </div>
     </div>
   </div>
 </template>
+
+
+<script>
+import pdf from 'vue-pdf'
+
+export default {
+  components: {
+    pdf
+  }
+}
+</script>
