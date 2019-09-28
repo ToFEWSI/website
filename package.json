@@ -19,6 +19,7 @@
     "@nuxtjs/bulma": "^1.2.4",
     "bindings": "^1.5.0",
     "brotli": "^1.3.2",
+    "bulma-divider": "^0.2.0",
     "cross-env": "^5.2.1",
     "csv-loader": "^3.0.2",
     "d3": "^5.12.0",

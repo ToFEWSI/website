@@ -14,7 +14,8 @@
     </div>
   </section>
 </template>
- <script>
+
+<script>
 import bios from '@/assets/people.json'
 import Person from '@/components/People.vue'
 

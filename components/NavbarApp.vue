@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-light is-fixed-top" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
         <h1 class="is-size-5">
@@ -51,8 +51,9 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary" href="https://twitter.com/hashtag/ToFEWSI?src=hash">
-              <i class="fab fa-twitter" />
+            <a target="_blank" class="button is-info" href="https://twitter.com/intent/follow?screen_name=ToFEWSI">
+                <span class="icon"><i class="fab fa-twitter"></i></span>
+                <span>Follow @ToFEWSI</span>
             </a>
           </div>
         </div>
