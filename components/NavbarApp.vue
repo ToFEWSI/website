@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar is-light is-fixed-top" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
         <h1 class="is-size-5">
@@ -32,20 +32,13 @@
           Research
         </nuxt-link>
 
-        <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-link">
-            Data products
-          </a>
+        <nuxt-link to="/forecasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
+          Forecasts
+        </nuxt-link>
 
-          <div class="navbar-dropdown">
-            <nuxt-link to="/hindcasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
-            Hindcasts 
-            </nuxt-link>
-            <nuxt-link to="/forecasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
-              Forecasts
-            </nuxt-link>
-          </div>
-        </div>
+        <nuxt-link to="/hindcasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
+          Hindcasts
+        </nuxt-link>
       </div>
 
       <div class="navbar-end">

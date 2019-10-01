@@ -1,0 +1,41 @@
+{
+
+    "AllanEGU2018": {
+        "id": 1,
+        "Title": "Towards a Fire Early Warning System for Indonesia (ToFEWSI)",
+        "Author": "Spessa et al.,",
+        "What": "Poster",
+        "How": "presented",
+        "Where": "EGU2018",
+        "Href": "https://drive.google.com/file/d/15GW0FcF67CtUcjh36i5vyru3On-wjQAm/preview",
+        "Thumb": "allan_egu2018_th.png",
+        "Description": "ToFEWSI project concept explained; the problem, scientific background, project goals and proposed timeline."
+    },
+
+    "TadasEGU2019": {
+        "id": 2,
+        "Title": "Forecasting fire activity in Indonesia",
+        "Author": "Nikonovas et al.,",
+        "Where": "EGU2019",
+        "What": "Poster",
+        "How": "presented",
+        "Href": "https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview",
+        "Thumb": "tadas_egu2019_th.png",
+        "Description": "A machine learning approach for modelling fire occurrence in Indonesia. The algorithms and input datasets used and model performance validation for the past years"
+    },
+
+    "SymonEGU2019": {
+        "id": 3,
+        "Title": "Modelling Seasonal Variations in Water Table Depth over the Tropical Peatlands of Riau, Sumatra, Indonesia",
+        "Author": "Mezbahuddin et al.,",
+        "What": "Poster",
+        "How": "presented",
+        "Where": "EGU2019",
+        "Href": "https://drive.google.com/file/d/1C4HgsiOqGuify313TqnrygYVaAsR7Lhe/preview",
+        "Thumb": "symon_egu2019_th.png",
+        "Description": "A process-based simulations of water table depth for Riau employing the Ecosys model. The model setup and validation using independent observational data."
+    }
+
+}
+
+ 

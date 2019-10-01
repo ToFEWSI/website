@@ -67,7 +67,7 @@
       <div class="container is-size-3">
         <div class="content is-medium">
             <p>
-            Supervised learning algorithms;<strong> logistic regression, Maxent, support vector machines and neural networks </strong> were trained to predict the probability of a grid cell having fire or not. Fire weather index, drought index and fine fuel moisture content features were calculated from ECMWF ERA5 reanalysis dataset using the Canadian fire weather index system. We have used monthly median, 0.75 quantiles and weekly running mean maximum values as features characterising fire weather conditions. Another important feature set was derived from the forest cover change dataset (Hansen et al., 2013, Science 342). These include fraction of primary and secondary forest loss in the grid cell and forest cover gain. We have also used mean grid cell elevation and peat depth information in the modelling.
+            Supervised learning algorithms;<strong> logistic regression, Maxent, support vector machines and neural networks </strong> were trained to predict the probability of a grid cell having fire or not. Fire weather index, drought index and fine fuel moisture content features were calculated from ECMWF ERA5 reanalysis dataset using the Canadian fire weather index system. We have used monthly median, 0.75 quantiles and weekly running mean maximum values as features characterising fire weather conditions. Another important feature set was derived from the forest cover change dataset (Hansen et al., 2013, Science 342). These include fraction of primary and secondary forest loss in the grid cell and forest cover gain. We have also used mean grid cell elevation and fraction of peatlands in the modelling.
 
             </p>
         </div>
@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import BaseMap from '@/components/BaseMap.vue'
 import BaseM from '@/components/BaseM.vue'
 import selectOption from '@/components/selectOption.vue'
 import ProbsAll from '@/assets/probdata_all.json'
@@ -87,7 +86,6 @@ import lonLats from '@/assets/geo/lonlats_all.json'
 export default {
   components: {
     selectOption: selectOption,
-    BaseMap: BaseMap,
     BaseM: BaseM
   },
   data() {
@@ -96,7 +94,7 @@ export default {
         ProbsAll: {},
         selectedYear: '2015',
         selectedMonth: 'October',
-        selectedModelLeft: 'Support Vector Machines',
+        selectedModelLeft: 'Neural Networks',
         selectedModelRight: 'Active fires count',
         yearOptions: ['2002', '2003', '2004', '2005', '2006', '2007',
                       '2008', '2009', '2010', '2011', '2012', '2013',
