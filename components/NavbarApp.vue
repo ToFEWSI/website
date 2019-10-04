@@ -1,5 +1,6 @@
 <template>
   <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+      <div class="container">
     <div class="navbar-brand">
       <nuxt-link to="/" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
         <h1 class="is-size-5">
@@ -52,6 +53,7 @@
         </div>
       </div>
     </div>
+  </div>
   </nav>
 </template>
 <script>
@@ -81,4 +83,5 @@ export default {
 .ymca {
   color: $primary; // will be resolved to #333
 }
+
 </style>

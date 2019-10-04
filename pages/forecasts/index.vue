@@ -58,16 +58,13 @@
 
 <script>
 import selectOption from '@/components/selectOption.vue'
-import ProbsAll from '@/assets/probdata_all.json'
 import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
-import BaseMap from '@/components/BaseMap.vue'
 import BaseM from '@/components/BaseM.vue'
 
 export default {
   components: {
     selectOption: selectOption,
-    BaseMap: BaseMap,
     BaseM: BaseM
   },
 
@@ -140,7 +137,7 @@ export default {
       },
 
       getDate: function() {
-        var baseDate = new Date(this.baseYear.concat(this.selectedMonth, '1'))
+        var baseDate = new Date(this.selectedMonth + ' 1, ' + this.baseYear)
         var newDate = new Date(baseDate.setMonth(baseDate.getMonth() + parseInt(this.selectedLead)-1));
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
