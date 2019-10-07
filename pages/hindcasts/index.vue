@@ -136,7 +136,7 @@ export default {
         var model = this.modelOptions.find(x => x.text === this.selectedModelLeft)
 
         var datas = ProbsAll[this.selectedYear][this.selectedMonth][model.value]
-        var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
+          var result = datas.map((s, i) => [s, this.lonLats[i]]).filter(s => s[0] > 49) //combine values
         //  .filter(s => s[0] > model.threshold) //
         return result
       },

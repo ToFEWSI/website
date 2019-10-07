@@ -94,7 +94,7 @@ export default {
   mounted() {
     this.colorScale = d3
       .scaleSequential(d3.interpolateInferno)
-      .domain([1, 100])
+      .domain([5, 9])
     this.colorA = this.getColorA
     this.land = land
     this.colorBack = this.colorScale(0)
@@ -190,6 +190,7 @@ export default {
     },
 
     reproject: function() {
+      console.log('reprojecting')
       var coordsNew = []
       for (let i = 0; i < this.datas.length; i++) {
         coordsNew[i] = []; // Initialize inner array
@@ -228,6 +229,7 @@ export default {
     },
 
     onZoom() {
+
       /** @type {D3ZoomEvent} */
       const e = event
       const tx = Math.min(

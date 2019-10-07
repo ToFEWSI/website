@@ -120,9 +120,11 @@ export default {
         var month = this.monthOptions.find(x => x.text === this.selectedMonth)
         var lead = this.leadOptions.find(x => x.text === this.selectedLead)
         var datas = Probs[month.value][lead.value][this.selectedProd]
+        var datas = datas.map(dat  => Math.floor(( dat / 10)))
         var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
+        var final_result = result.filter(s => s[0] > 4)
         //  .filter(s => s[0] > model.threshold) //
-        return result
+        return final_result
       },
 
      getRight: function() {
