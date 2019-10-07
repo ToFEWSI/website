@@ -1,7 +1,7 @@
 <template>
     <div class="box"
     >
-      <!-- Inner Content -->
+     <!-- Inner Content -->
       <svg 
         style="overflow: hidden;"
         width="100%"
@@ -14,7 +14,7 @@
 
         <g v-bind="transformProp">
           <path
-            fill="colorBack"
+            :fill="colorBack"
             stroke="#505050"
             stroke-width="0.5"
             :d="d()"
@@ -29,13 +29,33 @@
             :fill="item[1]"
           />
         </g>
+      <g>
+        <rect
+          v-for="(item, index) in colorRange"
+          :key="index"
+          :x="getLinScale(index - 1) + 400"
+          y="10"
+          width="29"
+          height="10"
+          :fill="item"
+        />
+        <text
+          v-for="(item, index) in thrText"
+          y="-6"
+          fill="#505050"
+          :x="getLinScale(index - 1) + 400"
+          text="item"
+        />
+      </g>
+
+ 
       </svg>
     </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
-import { event, zoom, zoomIdentity } from 'd3'
+import { legend, event, zoom, zoomIdentity } from 'd3'
 import * as topojson from 'topojson-client'
 import dataset from '@/assets/geo/ind_topo_simp_quant.json'
 
@@ -53,7 +73,11 @@ export default {
   data() {
     return {
       colorA: [],
+      colorBack: String,
+      colorRange: [],
       colorScale: null,
+       LinScale: null,
+      thrText: ['1', '3', '5', '7', '9'],
       coords: [],
       land: null,
       dimensions: {
@@ -82,6 +106,7 @@ export default {
   created() {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
+
   },
 
   watch: {
@@ -93,12 +118,16 @@ export default {
 
   mounted() {
     this.colorScale = d3
-      .scaleSequential(d3.interpolateInferno)
-      .domain([5, 9])
-    this.colorA = this.getColorA
+      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)//
+      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeYlGnBu[7])
+    this.LinScale = d3.scaleLinear()
+      .domain([-1, this.colorScale.range().length - 1])
+      .rangeRound([0, 200])
+    this.colorRange = this.colorScale.range()
+    console.log(this.colorRange)
     this.land = land
-    this.colorBack = this.colorScale(0)
-
+    this.colorBack = this.colorScale(1)
+    this.colorA = this.getColorA
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
 
@@ -110,6 +139,7 @@ export default {
         (b[1][0] - b[0][0]) / this.mapwidth,
         (b[1][1] - b[0][1]) / this.mapheight
       )
+
     this.translator = [
       (this.mapwidth - this.scaler * (b[1][0] + b[0][0])) / 2,
       (this.mapheight - this.scaler * (b[1][1] + b[0][1])) / 2
@@ -181,6 +211,9 @@ export default {
   },
 
   computed: {
+   getColors: function (){
+       return this.colorScale.range()
+   },
     getColorA: function() {
       const colorA = []
       for (let i = 0; i < this.datas.length; i++) {
@@ -221,6 +254,10 @@ export default {
   },
 
   methods: {
+
+  getLinScale: function(index) {
+      return this.LinScale(index)
+  },
 
     updateDimensions() {
         const bounds = (this.$refs.svg || this.$el).getBoundingClientRect()

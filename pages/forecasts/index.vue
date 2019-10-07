@@ -32,7 +32,7 @@
         <div class="column">
         <div class="container">
           <p>Fire occurrence forecast for <strong>{{ getDate }}</strong></p>
-          <base-m :zoom-transform.sync="zoomTransform" :datas="getLeft" />
+          <base-m :zoom-transform.sync="zoomTransform" :datas="getLeft"/>
         </div>
         </div>
 </div>
@@ -122,9 +122,8 @@ export default {
         var datas = Probs[month.value][lead.value][this.selectedProd]
         var datas = datas.map(dat  => Math.floor(( dat / 10)))
         var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        var final_result = result.filter(s => s[0] > 4)
-        //  .filter(s => s[0] > model.threshold) //
-        return final_result
+        //var final_result = result.filter(s => s[0] > 4)//
+        return result
       },
 
      getRight: function() {
@@ -134,7 +133,6 @@ export default {
         console.log(selProd.value)
         var datas = Probs[month.value][lead.value][selProd.value]
         var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        //  .filter(s => s[0] > model.threshold) //
         return result
       },
 
