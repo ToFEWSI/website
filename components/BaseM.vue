@@ -33,19 +33,23 @@
         <rect
           v-for="(item, index) in colorRange"
           :key="index"
-          :x="getLinScale(index - 1) + 400"
+          :x="linScale(index - 1) + 400"
           y="10"
           width="29"
           height="10"
           :fill="item"
         />
         <text
-          v-for="(item, index) in thrText"
-          y="-6"
-          fill="#505050"
-          :x="getLinScale(index - 1) + 400"
-          text="item"
+          v-for="(item, index) in ['2323', '3333']"
+          y="26"
+          fill="red"
+          :x="getlinScale(index - 1) + 400"
+          font-size="10px"
+          font-family="sans-serif"
+          :text="item"
         />
+        <text x="20" y="20" font-family="sans-serif" font-size="20px" fill="red">Hello!</text>
+
       </g>
 
  
@@ -76,8 +80,8 @@ export default {
       colorBack: String,
       colorRange: [],
       colorScale: null,
-       LinScale: null,
-      thrText: ['1', '3', '5', '7', '9'],
+      linScale: null,
+      thrText: ['10', '30', '50', '70', '90'],
       coords: [],
       land: null,
       dimensions: {
@@ -107,6 +111,15 @@ export default {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
 
+    this.colorScale = d3
+      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)//
+      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeYlGnBu[7])
+
+    this.linScale = d3.scaleLinear()
+      .domain([-1, this.colorScale.range().length - 1])
+      .rangeRound([0, 200])
+
+
   },
 
   watch: {
@@ -117,19 +130,15 @@ export default {
   },
 
   mounted() {
-    this.colorScale = d3
-      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)//
-      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeYlGnBu[7])
-    this.LinScale = d3.scaleLinear()
-      .domain([-1, this.colorScale.range().length - 1])
-      .rangeRound([0, 200])
     this.colorRange = this.colorScale.range()
-    console.log(this.colorRange)
     this.land = land
     this.colorBack = this.colorScale(1)
     this.colorA = this.getColorA
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
+    console.log(this.linScale(0))
+    console.log(this.linScale(0))
+    console.log(this.linScale(0))
 
     // determine scale and translatio
     const b = this.path.bounds(land)
@@ -255,8 +264,8 @@ export default {
 
   methods: {
 
-  getLinScale: function(index) {
-      return this.LinScale(index)
+  getlinScale(index) {
+      return this.linScale(index)
   },
 
     updateDimensions() {
