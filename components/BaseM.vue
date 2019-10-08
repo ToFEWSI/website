@@ -15,7 +15,7 @@
         <g v-bind="transformProp">
           <path
             :fill="colorBack"
-            stroke="#505050"
+            stroke="colorBack"
             stroke-width="0.5"
             :d="d()"
           />
@@ -30,26 +30,23 @@
           />
         </g>
       <g>
+
         <rect
-          v-for="(item, index) in colorRange"
+          v-for="(item, index) in colorScale.range()"
           :key="index"
-          :x="linScale(index - 1) + 400"
-          y="10"
-          width="29"
+          :x="getlinScale(index - 1) + 7"
+          y="210"
+          width="31"
           height="10"
           :fill="item"
         />
         <text
-          v-for="(item, index) in ['2323', '3333']"
-          y="26"
-          fill="red"
-          :x="getlinScale(index - 1) + 400"
+          v-for="(item, index) in thrText"
+          y="205"
+          fill="#202020"
+          :x="getlinScale(index)"
           font-size="10px"
-          font-family="sans-serif"
-          :text="item"
-        />
-        <text x="20" y="20" font-family="sans-serif" font-size="20px" fill="red">Hello!</text>
-
+          >{{ item }}</text>
       </g>
 
  
@@ -59,14 +56,14 @@
 
 <script>
 import * as d3 from 'd3'
-import { legend, event, zoom, zoomIdentity } from 'd3'
+import { event, zoom, zoomIdentity } from 'd3'
 import * as topojson from 'topojson-client'
 import dataset from '@/assets/geo/ind_topo_simp_quant.json'
 
 // const land = topojson.feature(dataset, dataset.objects.IDN_adm1_lon_lat)
 const land = topojson.feature(dataset, dataset.objects.ind_geojson)
 export default {
-  components: {},
+
   props: {
     zoomTransform: {
       type: Object,
@@ -78,9 +75,7 @@ export default {
     return {
       colorA: [],
       colorBack: String,
-      colorRange: [],
       colorScale: null,
-      linScale: null,
       thrText: ['10', '30', '50', '70', '90'],
       coords: [],
       land: null,
@@ -110,10 +105,9 @@ export default {
   created() {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
-
     this.colorScale = d3
-      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)//
-      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeYlGnBu[7])
+      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)
+      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeOrRd[6])
 
     this.linScale = d3.scaleLinear()
       .domain([-1, this.colorScale.range().length - 1])
@@ -130,15 +124,11 @@ export default {
   },
 
   mounted() {
-    this.colorRange = this.colorScale.range()
     this.land = land
     this.colorBack = this.colorScale(1)
     this.colorA = this.getColorA
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
-    console.log(this.linScale(0))
-    console.log(this.linScale(0))
-    console.log(this.linScale(0))
 
     // determine scale and translatio
     const b = this.path.bounds(land)

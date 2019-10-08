@@ -50,6 +50,7 @@
           <base-m :zoom-transform.sync="zoomTransform" :datas="getRight" />
           </div>
         </div>
+      <legend :colorScale="colorScale"/>
     </div>
 
   </section>
@@ -63,9 +64,10 @@ import lonLats from '@/assets/geo/lonlats_fore.json'
 import BaseM from '@/components/BaseM.vue'
 
 export default {
+
   components: {
     selectOption: selectOption,
-    BaseM: BaseM
+    BaseM: BaseM,
   },
 
   data() {
@@ -80,7 +82,7 @@ export default {
       
       compOptions: [
           {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp'},
-          {text: 'Climatology', longText: 'ERA5 1985 - 2018 mean climate based prediction', value: 'clim_probs'},
+          {text: 'Climatology', longText: 'ERA5 1985 - 2018 mean climate based prediction', value: 'clim_probs'}
       ],
 
       monthOptions: [
