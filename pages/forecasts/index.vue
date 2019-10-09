@@ -32,7 +32,7 @@
         <div class="column">
         <div class="container">
           <p>Fire occurrence forecast for <strong>{{ getDate }}</strong></p>
-          <base-m :zoom-transform.sync="zoomTransform" :datas="getLeft"/>
+          <base-m :zoom-transform.sync="zoomTransform" :mapData="getLeft"/>
         </div>
         </div>
 </div>
@@ -47,10 +47,9 @@
          </div>
          <div class="column">
              <p>{{ getCompText }} for <strong> {{ getDate }}</strong></p>
-          <base-m :zoom-transform.sync="zoomTransform" :datas="getRight" />
+          <base-m :zoom-transform.sync="zoomTransform" :mapData="getRight" />
           </div>
         </div>
-      <legend :colorScale="colorScale"/>
     </div>
 
   </section>
@@ -58,6 +57,7 @@
 </template>
 
 <script>
+/* @flow */
 import selectOption from '@/components/selectOption.vue'
 import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
@@ -78,7 +78,7 @@ export default {
       baseDate: {},
       selectedLead: '1 month lead',
       selectedProd: 'probs',
-      selectedCompProd: 'Climatology',
+      selectedCompProd: 'Active fires',
       
       compOptions: [
           {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp'},
@@ -98,6 +98,13 @@ export default {
           {text: '4 month lead', value: '4'},
       ],
 
+      thrOptions: [
+          {text: 'probs', value: [10,30,50,70,90]},
+          {text: 'Active fires', value: [10,20,50,100,150]},
+          {text: 'Climatology', value: [10,50,100,150,200]},
+
+      ],
+
       zoomTransform: {
         k: 1,
         x: 0,
@@ -114,33 +121,35 @@ export default {
 
   computed: {
       getCompText: function() {
-        var text = this.compOptions.find(x => x.text === this.selectedCompProd)
+        let text = this.compOptions.find(x => x.text === this.selectedCompProd)
         return text.longText
       },
 
       getLeft: function() {
-        var month = this.monthOptions.find(x => x.text === this.selectedMonth)
-        var lead = this.leadOptions.find(x => x.text === this.selectedLead)
-        var datas = Probs[month.value][lead.value][this.selectedProd]
-        var datas = datas.map(dat  => Math.floor(( dat / 10)))
-        var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        //var final_result = result.filter(s => s[0] > 4)//
-        return result
+        let month = this.monthOptions.find(x => x.text === this.selectedMonth)
+        let lead = this.leadOptions.find(x => x.text === this.selectedLead)
+        let thresholds = this.thrOptions.find(x => x.text === this.selectedProd)
+        let datas = Probs[month.value][lead.value][this.selectedProd]
+        let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
+        //let final_result = result.filter(s => s[0] > 4)//
+        return {'vals': result, 'label': 'Probability %', 'thresholds': thresholds.value}
       },
 
      getRight: function() {
-        var month = this.monthOptions.find(x => x.text === this.selectedMonth)
-        var lead = this.leadOptions.find(x => x.text === this.selectedLead)
-        var selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
-        console.log(selProd.value)
-        var datas = Probs[month.value][lead.value][selProd.value]
-        var result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        return result
+        let month = this.monthOptions.find(x => x.text === this.selectedMonth)
+        let lead = this.leadOptions.find(x => x.text === this.selectedLead)
+        let selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
+
+        let thresholds = this.thrOptions.find(x => x.text === this.selectedCompProd)
+         console.log(thresholds.value)
+        let datas = Probs[month.value][lead.value][selProd.value]
+        let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
+        return {'vals': result, 'label': 'Active fire count', 'thresholds': thresholds.value}
       },
 
       getDate: function() {
-        var baseDate = new Date(this.selectedMonth + ' 1, ' + this.baseYear)
-        var newDate = new Date(baseDate.setMonth(baseDate.getMonth() + parseInt(this.selectedLead)-1));
+        let baseDate = new Date(this.selectedMonth + ' 1, ' + this.baseYear)
+        let newDate = new Date(baseDate.setMonth(baseDate.getMonth() + parseInt(this.selectedLead)-1));
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
       },

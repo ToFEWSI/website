@@ -12,10 +12,13 @@ module.exports = {
     'plugin:prettier/recommended'
   ],
   plugins: [
+    'html',
+    'flowtype-errors',
     'prettier'
   ],
   // add your custom rules here
   rules: {
     'no-console': 'off',
+    'flowtype-errors/show-errors': 2
   },
 }

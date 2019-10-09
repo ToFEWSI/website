@@ -8,7 +8,7 @@
         height="100%"
         class="pan-zoom"
         :zoom-transform="zoomTransform"
-        :datas="datas"
+        :mapData="mapData"
         :viewBox="viewBoxString"
       >
 
@@ -30,6 +30,12 @@
           />
         </g>
       <g>
+        <text
+          y="192"
+          fill="#202020"
+          x=15
+          font-size="12px"
+          > {{ mapData.label }} </text>
 
         <rect
           v-for="(item, index) in colorScale.range()"
@@ -41,7 +47,7 @@
           :fill="item"
         />
         <text
-          v-for="(item, index) in thrText"
+          v-for="(item, index) in mapData.thresholds"
           y="205"
           fill="#202020"
           :x="getlinScale(index)"
@@ -68,7 +74,9 @@ export default {
     zoomTransform: {
       type: Object,
         },
-    datas: Array
+      mapData: {
+          type: Object,
+      }
   },
 
   data() {
@@ -76,7 +84,6 @@ export default {
       colorA: [],
       colorBack: String,
       colorScale: null,
-      thrText: ['10', '30', '50', '70', '90'],
       coords: [],
       land: null,
       dimensions: {
@@ -107,17 +114,18 @@ export default {
     this.d = () => this.path(land)
     this.colorScale = d3
       //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)
-      .scaleThreshold().domain([1, 3, 5, 7, 9]).range(d3.schemeOrRd[6])
+      .scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])
 
     this.linScale = d3.scaleLinear()
       .domain([-1, this.colorScale.range().length - 1])
       .rangeRound([0, 200])
 
 
+
   },
 
   watch: {
-    datas(newVal) {
+    mapData(newVal) {
       this.colorA = this.getColorA
       this.coords = this.reproject
     }
@@ -125,7 +133,7 @@ export default {
 
   mounted() {
     this.land = land
-    this.colorBack = this.colorScale(1)
+    this.colorBack = this.colorScale(0)
     this.colorA = this.getColorA
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
@@ -215,19 +223,19 @@ export default {
    },
     getColorA: function() {
       const colorA = []
-      for (let i = 0; i < this.datas.length; i++) {
-        colorA[i] = this.colorScale(this.datas[i][0])
+      for (let i = 0; i < this.mapData.vals.length; i++) {
+        colorA[i] = this.colorScale(this.mapData.vals[i][0])
       }
       return colorA
     },
 
     reproject: function() {
       console.log('reprojecting')
-      var coordsNew = []
-      for (let i = 0; i < this.datas.length; i++) {
+      let coordsNew = []
+      for (let i = 0; i < this.mapData.vals.length; i++) {
         coordsNew[i] = []; // Initialize inner array
-            coordsNew[i][0] = this.projection(this.datas[i][1])
-            coordsNew[i][1] = this.colorScale(this.datas[i][0])
+            coordsNew[i][0] = this.projection(this.mapData.vals[i][1])
+            coordsNew[i][1] = this.colorScale(this.mapData.vals[i][0])
       }
       return coordsNew
     },
