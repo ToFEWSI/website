@@ -9,7 +9,7 @@
       <section class="section">
       <div class="container is-size-3">
         <div class="content is-medium">
-      <p>ToFEWSI fire occurrence probabilities for the ongoing 2019 dry season in Indonesia predicted by Neural Network classifier. The predictions are based on ECMWF SEAS5 seasonal forecasts, past forest cover change and map of peatland distribution in Indonesia.</p>
+      <p>Fire occurrence probabilities for the ongoing 2019 dry season in Indonesia produced by the ToFEWSI modelling system. The predictions are generated using Neural Networks model. The model is trained using ERA5 reanalysis weather, past forest cover change and map of peatland distribution in Indonesia. Forecast probabilities are computed using ECMWF SEAS5 model seasonal forecasts. Validation is performed against MODIS active fire observations. To find out more about the method see the <a href="https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview" target="_blank" class="button is-info is-outlined is-small nuxt-lind">EGU2019 poster</a></p>
     </div>
   </div>
   </section>
@@ -28,10 +28,18 @@
                          :selected="selectedLead"
                          @updateOption="selectedLead = $event"
                          ></select-option>
+
+    <h1>Prediction product: </h1>
+          <select-option :options="prodOptions.map(a => a.text)" 
+                         :selected="selectedProd"
+                         @updateOption="selectedProd = $event"
+                         ></select-option>
+
          </div>
+
         <div class="column">
         <div class="container">
-          <p>Fire occurrence forecast for <strong>{{ getDate }}</strong></p>
+            <p>{{ getProdText }} for <strong>{{ getDate }}</strong></p>
           <base-m :zoom-transform.sync="zoomTransform" :mapData="getLeft"/>
         </div>
         </div>
@@ -46,7 +54,7 @@
            ></select-option>
          </div>
          <div class="column">
-             <p>{{ getCompText }} for <strong> {{ getDate }}</strong></p>
+             <p>MODIS Active fires for <strong> {{ getDate }}</strong></p>
           <base-m :zoom-transform.sync="zoomTransform" :mapData="getRight" />
           </div>
         </div>
@@ -77,12 +85,17 @@ export default {
       selectedMonth: 'September',
       baseDate: {},
       selectedLead: '1 month lead',
-      selectedProd: 'probs',
+      selectedProd: 'Forecast',
       selectedCompProd: 'Active fires',
       
+      prodOptions: [
+          {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'probs', thresholds: [10,30,50,70,90]},
+          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90]},
+          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'probs',  thresholds: [-50, -10, -5, 5, 10, 50]},
+      ],
+
       compOptions: [
-          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp'},
-          {text: 'Climatology', longText: 'ERA5 1985 - 2018 mean climate based prediction', value: 'clim_probs'}
+          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160]},
       ],
 
       monthOptions: [
@@ -96,13 +109,6 @@ export default {
           {text: '2 month lead', value: '2'},
           {text: '3 month lead', value: '3'},
           {text: '4 month lead', value: '4'},
-      ],
-
-      thrOptions: [
-          {text: 'probs', value: [10,30,50,70,90]},
-          {text: 'Active fires', value: [10,20,50,100,150]},
-          {text: 'Climatology', value: [10,50,100,150,200]},
-
       ],
 
       zoomTransform: {
@@ -120,31 +126,33 @@ export default {
   },
 
   computed: {
-      getCompText: function() {
-        let text = this.compOptions.find(x => x.text === this.selectedCompProd)
+      getProdText: function() {
+        let text = this.prodOptions.find(x => x.text === this.selectedProd)
         return text.longText
       },
 
       getLeft: function() {
         let month = this.monthOptions.find(x => x.text === this.selectedMonth)
         let lead = this.leadOptions.find(x => x.text === this.selectedLead)
-        let thresholds = this.thrOptions.find(x => x.text === this.selectedProd)
-        let datas = Probs[month.value][lead.value][this.selectedProd]
+        let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
+        let datas = this.probs[month.value][lead.value][selProd.value]
+          if (selProd.text === 'Anomaly') {
+              let clim = this.probs[month.value][lead.value]['clim_probs']
+              datas = datas.map((x, i) => x - clim[i])
+          }
         let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        //let final_result = result.filter(s => s[0] > 4)//
-        return {'vals': result, 'label': 'Probability %', 'thresholds': thresholds.value}
+        //let final_result = result.filter(s => s[0] > 10)
+        return {'vals': result, 'label': selProd.text, 'thresholds': selProd.thresholds}
       },
 
      getRight: function() {
         let month = this.monthOptions.find(x => x.text === this.selectedMonth)
         let lead = this.leadOptions.find(x => x.text === this.selectedLead)
         let selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
-
-        let thresholds = this.thrOptions.find(x => x.text === this.selectedCompProd)
-         console.log(thresholds.value)
-        let datas = Probs[month.value][lead.value][selProd.value]
+        let datas = this.probs[month.value][lead.value][selProd.value]
         let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-        return {'vals': result, 'label': 'Active fire count', 'thresholds': thresholds.value}
+         let final_result = result.filter(s => s[0] > 10)
+        return {'vals': final_result, 'label': selProd.text, 'thresholds': selProd.thresholds}
       },
 
       getDate: function() {
@@ -153,6 +161,7 @@ export default {
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
       },
+
     },
 
 }

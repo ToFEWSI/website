@@ -1,6 +1,5 @@
 <template>
-    <div class="box"
-    >
+    <div class="box">
      <!-- Inner Content -->
       <svg 
         style="overflow: hidden;"
@@ -15,7 +14,7 @@
         <g v-bind="transformProp">
           <path
             :fill="colorBack"
-            stroke="colorBack"
+            stroke="#909090"
             stroke-width="0.5"
             :d="d()"
           />
@@ -28,6 +27,7 @@
             height="3.4"
             :fill="item[1]"
           />
+
         </g>
       <g>
         <text
@@ -35,7 +35,7 @@
           fill="#202020"
           x=15
           font-size="12px"
-          > {{ mapData.label }} </text>
+          > {{ getLabel }}</text>
 
         <rect
           v-for="(item, index) in colorScale.range()"
@@ -81,7 +81,6 @@ export default {
 
   data() {
     return {
-      colorA: [],
       colorBack: String,
       colorScale: null,
       coords: [],
@@ -105,36 +104,38 @@ export default {
       projection: d3
         .geoEquirectangular()
         .scale(1)
-        .translate([0, 0])
+        .translate([0, 0]),
+
+      colorScaleOptions: [
+          {text: 'Forecast', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])},
+          {text: 'Climatology', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])},
+          {text: 'Anomaly', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeRdBu[7].reverse())},
+          {text: 'Active fires', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])},
+      ],
     }
   },
 
   created() {
     this.path = d3.geoPath().projection(this.projection)
     this.d = () => this.path(land)
-    this.colorScale = d3
-      //.scaleSequential().domain([0, 9]).interpolator(d3.interpolateInferno)
-      .scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])
-
+    this.colorScale = this.getColorScale
     this.linScale = d3.scaleLinear()
       .domain([-1, this.colorScale.range().length - 1])
       .rangeRound([0, 200])
-
-
-
   },
 
   watch: {
     mapData(newVal) {
-      this.colorA = this.getColorA
+      this.colorScale = this.getColorScale
+       this.colorScale.domain(this.mapData.thresholds)
       this.coords = this.reproject
+      this.colorBack = this.colorScale(0)
     }
   },
 
   mounted() {
     this.land = land
     this.colorBack = this.colorScale(0)
-    this.colorA = this.getColorA
     window.addEventListener('resize', this.updateDimensions)
     this.updateDimensions()
 
@@ -218,19 +219,22 @@ export default {
   },
 
   computed: {
-   getColors: function (){
-       return this.colorScale.range()
-   },
-    getColorA: function() {
-      const colorA = []
-      for (let i = 0; i < this.mapData.vals.length; i++) {
-        colorA[i] = this.colorScale(this.mapData.vals[i][0])
-      }
-      return colorA
+ 
+    getLabel: function() {
+        if (this.mapData.label !== 'Active fires') {
+            return this.mapData.label.concat(" probability %")
+        }
+        else {
+            return this.mapData.label.concat(" count")
+        }
+    },
+
+    getColorScale: function() {
+      let colorScale = this.colorScaleOptions.find(x => x.text === this.mapData.label)
+      return colorScale.value
     },
 
     reproject: function() {
-      console.log('reprojecting')
       let coordsNew = []
       for (let i = 0; i < this.mapData.vals.length; i++) {
         coordsNew[i] = []; // Initialize inner array

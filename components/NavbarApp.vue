@@ -28,7 +28,6 @@
           Team
         </nuxt-link>
 
-
         <nuxt-link to="/research" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
           Research
         </nuxt-link>
@@ -37,9 +36,6 @@
           Forecasts
         </nuxt-link>
 
-        <nuxt-link to="/hindcasts" class="navbar-item" active-class="is-active" exact @click.native="toggleBurger">
-          Hindcasts
-        </nuxt-link>
       </div>
 
       <div class="navbar-end">
