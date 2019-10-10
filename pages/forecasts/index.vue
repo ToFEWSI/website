@@ -9,7 +9,7 @@
       <section class="section">
       <div class="container is-size-3">
         <div class="content is-medium">
-      <p>Fire occurrence probabilities for the ongoing 2019 dry season in Indonesia produced by the ToFEWSI modelling system. The predictions are generated using Neural Networks model. The model is trained using ERA5 reanalysis weather, past forest cover change and map of peatland distribution in Indonesia. Forecast probabilities are computed using ECMWF SEAS5 model seasonal forecasts. Validation is performed against MODIS active fire observations. To find out more about the method see the <a href="https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview" target="_blank" class="button is-info is-outlined is-small nuxt-lind">EGU2019 poster</a></p>
+      <p>Fire occurrence probabilities for the ongoing 2019 dry season in Indonesia produced by the ToFEWSI modelling system. The predictions are generated using Neural Network algorithm. The model is trained using ERA5 reanalysis weather, past forest cover change and map of peatland distribution in Indonesia. Forecast probabilities are computed using ECMWF SEAS5 model seasonal forecasts. Validation is performed against MODIS active fire observations. To find out more about the method see this <a href="https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview" target="_blank">EGU2019 poster</a>.</p>
     </div>
   </div>
   </section>
@@ -18,15 +18,15 @@
       <div class="columns">
          <div class="column is-one-quarter">
     <h1>SEAS5 forecast issued:</h1>
-              <select-option :options="monthOptions.map(a => a.text)" 
-                             :selected="selectedMonth" 
-                             @updateOption="selectedMonth = $event"
+              <select-option :options="Object.values(monthOptions)" 
+                             :selected="monthOptions[selectedMonth]" 
+                             @updateOption="updateSelectedMonth($event)"
                              ></select-option>
 
     <h1>lead time: </h1>
-          <select-option :options="leadOptions.map(a => a.text)" 
-                         :selected="selectedLead"
-                         @updateOption="selectedLead = $event"
+          <select-option :options="Object.values(leadOptions)" 
+                         :selected="leadOptions[selectedLead]"
+                         @updateOption="updateSelectedLead($event)"
                          ></select-option>
 
     <h1>Prediction product: </h1>
@@ -82,34 +82,35 @@ export default {
     return {
       probs: {},
       baseYear: '2019',
-      selectedMonth: 'September',
+      selectedMonth: '2019-9',
       baseDate: {},
-      selectedLead: '1 month lead',
+      selectedLead: '1',
       selectedProd: 'Forecast',
       selectedCompProd: 'Active fires',
       
       prodOptions: [
-          {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'probs', thresholds: [10,30,50,70,90]},
-          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90]},
-          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'probs',  thresholds: [-50, -10, -5, 5, 10, 50]},
+          {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'probs', thresholds: [10,30,50,70,90], shift: 0},
+          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90], shift: 0},
+          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'probs',  thresholds: [-50, -10, -5, 5, 10, 50], shift: 0},
       ],
 
       compOptions: [
-          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160]},
+          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
+          {text: 'Validation', longText: 'True and false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
       ],
 
-      monthOptions: [
-            {text: 'July', value: '2019-7'},
-            {text: 'August', value: '2019-8'},
-            {text: 'September', value: '2019-9'}
-      ],
+      monthOptions: {
+            '2019-7': 'July',
+            '2019-8': 'August',
+            '2019-9': 'September'
+      },
 
-      leadOptions: [
-          {text: '1 month lead', value: '1'},
-          {text: '2 month lead', value: '2'},
-          {text: '3 month lead', value: '3'},
-          {text: '4 month lead', value: '4'},
-      ],
+      leadOptions: {
+          '1': '1 month lead',
+          '2': '2 month lead',
+          '3': '3 month lead',
+          '4': '4 month lead',
+      },
 
       zoomTransform: {
         k: 1,
@@ -120,48 +121,95 @@ export default {
   },
 
   created() {
-    this.probs = Probs;
-    this.lonLats = lonLats;
+    this.lonLats = lonLats
     this.baseDate = new Date(this.baseYear.concat(this.selectedMonth, '1'))
+    this.probs = this.getProbs
   },
 
   computed: {
+      getProbs: function() {
+        console.log('getting probs')
+        return Probs[this.selectedMonth][this.selectedLead]
+        this.getLeft
+      },
+
       getProdText: function() {
         let text = this.prodOptions.find(x => x.text === this.selectedProd)
         return text.longText
       },
 
       getLeft: function() {
-        let month = this.monthOptions.find(x => x.text === this.selectedMonth)
-        let lead = this.leadOptions.find(x => x.text === this.selectedLead)
+        console.log('getting left')
         let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-        let datas = this.probs[month.value][lead.value][selProd.value]
+        let datas = Probs[this.selectedMonth][this.selectedLead][selProd.value]
           if (selProd.text === 'Anomaly') {
-              let clim = this.probs[month.value][lead.value]['clim_probs']
-              datas = datas.map((x, i) => x - clim[i])
+              datas = this.getAnomalies(datas)
           }
         let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
         //let final_result = result.filter(s => s[0] > 10)
-        return {'vals': result, 'label': selProd.text, 'thresholds': selProd.thresholds}
+        return {'vals': result, 'label': selProd.text, 'thresholds': selProd.thresholds, 'shift': selProd.shift}
       },
 
      getRight: function() {
-        let month = this.monthOptions.find(x => x.text === this.selectedMonth)
-        let lead = this.leadOptions.find(x => x.text === this.selectedLead)
         let selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
-        let datas = this.probs[month.value][lead.value][selProd.value]
-        let result = datas.map((s, i) => [s, this.lonLats[i]]) //combine values
-         let final_result = result.filter(s => s[0] > 10)
-        return {'vals': final_result, 'label': selProd.text, 'thresholds': selProd.thresholds}
+        let frps = Probs[this.selectedMonth][this.selectedLead][selProd.value]
+        if (selProd.text === 'Validation') {
+            let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
+            console.log(selProd)
+            let foreProbs = Probs[this.selectedMonth][this.selectedLead][selProd.value]
+            frps = this.getValidation(frps, foreProbs)
+            let unique = frps.filter((item, i, ar) => ar.indexOf(item) === i)
+            console.log(unique)
+          }
+        let final_result = frps.map((s, i) => [s, this.lonLats[i]]) //combine values
+        //let final_result = result.filter(s => s[0] > 10)
+        return {'vals': final_result, 'label': selProd.text, 'thresholds': selProd.thresholds, 'shift': selProd.shift}
       },
 
       getDate: function() {
-        let baseDate = new Date(this.selectedMonth + ' 1, ' + this.baseYear)
+        let baseDate = new Date(this.monthOptions[this.selectedMonth] + ' 1, ' + this.baseYear)
         let newDate = new Date(baseDate.setMonth(baseDate.getMonth() + parseInt(this.selectedLead)-1));
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
       },
+    },
 
+    methods: {
+        getValidation: function(frps, foreProbs) {
+            let vali = foreProbs.map((forecast, i) => this.truePositives(forecast, frps[i]))
+            return vali
+        },
+
+        truePositives: function(forecast, frp) {
+            if (forecast > 49 && frp > 9) {
+                return 'TP'
+            }
+            if (forecast > 49 && frp < 10) {
+                return 'FP'
+            }
+            if (forecast < 50 && frp < 10) {
+                return 'TN'
+            }
+            if (forecast < 50 && frp > 9) {
+                return 'FN'
+            }
+        },
+
+        getAnomalies: function(datas) {
+             let clim = this.probs['clim_probs']
+             let anomaly = datas.map((x, i) => x - clim[i])
+             return anomaly
+        },
+
+        updateSelectedLead: function(selected) {
+          this.selectedLead = Object.keys(this.leadOptions)
+                .find(key => this.leadOptions[key] === selected);
+        },
+
+        updateSelectedMonth: function(selected) {
+          this.selectedMonth = Object.keys(this.monthOptions)
+                .find(key => this.monthOptions[key] === selected);
+        },
     },
 
 }

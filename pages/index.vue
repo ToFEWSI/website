@@ -30,9 +30,7 @@
     <section class="section">
       <div class="container has-text-centered is-size-3">
         <div class="content is-medium">
-          <strong>ToFEWSI</strong> is an international and multidisciplinary project involving researchers with diverse backgrounds from organizations located in Indonesia, UK and Canada. Among us we have experts in wildfire modelling, peatland hydrology, ecological modelling, earth observation, climate change, meteorology and many more. <nuxt-link to="/team" class="button is-primary is-outlined is-small nuxt-lind">
-            The team
-          </nuxt-link>
+          <strong>ToFEWSI</strong> is an international and multidisciplinary project involving researchers with diverse backgrounds from organizations located in Indonesia, UK and Canada. Among us we have experts in wildfire modelling, peatland hydrology, ecological modelling, earth observation, climate change, meteorology and many more. Meet the <nuxt-link to="/team">ToFEWSI team</nuxt-link>.
         </div>
       </div>
     </section>

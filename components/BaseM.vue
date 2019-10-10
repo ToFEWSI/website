@@ -50,7 +50,7 @@
           v-for="(item, index) in mapData.thresholds"
           y="205"
           fill="#202020"
-          :x="getlinScale(index)"
+          :x="getlinScale(index) - mapData.shift"
           font-size="10px"
           >{{ item }}</text>
       </g>
@@ -111,6 +111,7 @@ export default {
           {text: 'Climatology', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])},
           {text: 'Anomaly', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeRdBu[7].reverse())},
           {text: 'Active fires', value: d3.scaleThreshold().domain(this.mapData.thresholds).range(d3.schemeOrRd[6])},
+          {text: 'Validation', value: d3.scaleOrdinal().domain(this.mapData.thresholds).range(["#70c1b3", "#247ba0", "#f25f5c", "#ffe066"])},
       ],
     }
   },
@@ -127,7 +128,7 @@ export default {
   watch: {
     mapData(newVal) {
       this.colorScale = this.getColorScale
-       this.colorScale.domain(this.mapData.thresholds)
+      console.log(this.colorScale.range())
       this.coords = this.reproject
       this.colorBack = this.colorScale(0)
     }
@@ -231,7 +232,9 @@ export default {
 
     getColorScale: function() {
       let colorScale = this.colorScaleOptions.find(x => x.text === this.mapData.label)
-      return colorScale.value
+      colorScale = colorScale.value
+      colorScale.domain(this.mapData.thresholds)
+      return colorScale
     },
 
     reproject: function() {
