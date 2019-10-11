@@ -90,12 +90,12 @@ export default {
       
       prodOptions: [
           {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'probs', thresholds: [10,30,50,70,90], shift: 0},
-          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90], shift: 0},
           {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'probs',  thresholds: [-50, -10, -5, 5, 10, 50], shift: 0},
       ],
 
       compOptions: [
           {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
+          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90], shift: 0},
           {text: 'Validation', longText: 'True and false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
       ],
 
@@ -152,14 +152,12 @@ export default {
 
      getRight: function() {
         let selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
-        let frps = Probs[this.selectedMonth][this.selectedLead][selProd.value]
+        let frps = Probs[this.selectedMonth][selProd.value]
         if (selProd.text === 'Validation') {
             let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-            console.log(selProd)
             let foreProbs = Probs[this.selectedMonth][this.selectedLead][selProd.value]
             frps = this.getValidation(frps, foreProbs)
             let unique = frps.filter((item, i, ar) => ar.indexOf(item) === i)
-            console.log(unique)
           }
         let final_result = frps.map((s, i) => [s, this.lonLats[i]]) //combine values
         //let final_result = result.filter(s => s[0] > 10)

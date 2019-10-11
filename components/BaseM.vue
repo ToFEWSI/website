@@ -222,11 +222,17 @@ export default {
   computed: {
  
     getLabel: function() {
-        if (this.mapData.label !== 'Active fires') {
-            return this.mapData.label.concat(" probability %")
+        if (this.mapData.label === 'Active fires') {
+            return this.mapData.label.concat(" count")
+        } 
+        else if (this.mapData.label === 'Validation') {
+            return this.mapData.label
+        }
+        else if (this.mapData.label === 'Anomaly') {
+            return "Probability ".concat(this.mapData.label).concat(" %")
         }
         else {
-            return this.mapData.label.concat(" count")
+            return this.mapData.label.concat(" probability %")
         }
     },
 
