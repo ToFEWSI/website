@@ -128,7 +128,6 @@ export default {
   watch: {
     mapData(newVal) {
       this.colorScale = this.getColorScale
-      console.log(this.colorScale.range())
       this.coords = this.reproject
       this.colorBack = this.colorScale(0)
     }

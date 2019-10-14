@@ -39,7 +39,7 @@
 
         <div class="column">
         <div class="container">
-            <p>{{ getProdText }} for <strong>{{ getDate }}</strong></p>
+            <p>{{ getProdText }} forecast issued <strong>{{ getSEAS5Date }}</strong></p>
           <base-m :zoom-transform.sync="zoomTransform" :mapData="getLeft"/>
         </div>
         </div>
@@ -67,7 +67,7 @@
 <script>
 /* @flow */
 import selectOption from '@/components/selectOption.vue'
-import Probs from '@/assets/forecast.json'
+import Probs from '@/assets/forecast_.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
 import BaseM from '@/components/BaseM.vue'
 
@@ -89,20 +89,23 @@ export default {
       selectedCompProd: 'Active fires',
       
       prodOptions: [
-          {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'probs', thresholds: [10,30,50,70,90], shift: 0},
-          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'probs',  thresholds: [-50, -10, -5, 5, 10, 50], shift: 0},
+          {text: 'Forecast', longText: 'SEAS5 based fire occurrence probability', value: 'forecast', thresholds: [10,30,50,70,90], shift: 0},
+          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'forecast',  thresholds: [-50, -10, -5, 5, 10, 50], shift: 0},
       ],
 
       compOptions: [
           {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
-          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'clim_probs', thresholds: [10,30,50,70,90], shift: 0},
+          {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'climatology', thresholds: [10,30,50,70,90], shift: 0},
           {text: 'Validation', longText: 'True and false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
       ],
 
       monthOptions: {
             '2019-7': 'July',
             '2019-8': 'August',
-            '2019-9': 'September'
+            '2019-9': 'September',
+            '2019-10': 'October',
+            '2019-11': 'November',
+            '2019-12': 'December',
       },
 
       leadOptions: {
@@ -124,12 +127,20 @@ export default {
     this.lonLats = lonLats
     this.baseDate = new Date(this.baseYear.concat(this.selectedMonth, '1'))
     this.probs = this.getProbs
+    this.dates = this.parseDates
+      console.log(this.dates)
   },
 
   computed: {
+
+      parseDates: function() {
+        let dateStrings = Object.keys(Probs)
+        let dateOptions = dateStrings.map(x => this.datesObject(x))
+        return dateOptions
+      },
+
       getProbs: function() {
-        console.log('getting probs')
-        return Probs[this.selectedMonth][this.selectedLead]
+        return Probs[this.selectedMonth]
         this.getLeft
       },
 
@@ -139,9 +150,8 @@ export default {
       },
 
       getLeft: function() {
-        console.log('getting left')
         let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-        let datas = Probs[this.selectedMonth][this.selectedLead][selProd.value]
+        let datas = Probs[this.selectedMonth][selProd.value][this.selectedLead]
           if (selProd.text === 'Anomaly') {
               datas = this.getAnomalies(datas)
           }
@@ -155,7 +165,7 @@ export default {
         let frps = Probs[this.selectedMonth][selProd.value]
         if (selProd.text === 'Validation') {
             let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-            let foreProbs = Probs[this.selectedMonth][this.selectedLead][selProd.value]
+            let foreProbs = Probs[this.selectedMonth][selProd.value][this.selectedLead]
             frps = this.getValidation(frps, foreProbs)
             let unique = frps.filter((item, i, ar) => ar.indexOf(item) === i)
           }
@@ -166,13 +176,29 @@ export default {
 
       getDate: function() {
         let baseDate = new Date(this.monthOptions[this.selectedMonth] + ' 1, ' + this.baseYear)
-        let newDate = new Date(baseDate.setMonth(baseDate.getMonth() + parseInt(this.selectedLead)-1));
+        const month = baseDate.toLocaleString('default', { month: 'long' });
+        return baseDate.getFullYear().toString().concat(' ', month)
+      },
+
+      getSEAS5Date: function() {
+        let baseDate = new Date(this.monthOptions[this.selectedMonth] + ' 1, ' + this.baseYear)
+        let newDate = new Date(baseDate.setMonth(baseDate.getMonth() - parseInt(this.selectedLead) + 1));
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
       },
     },
 
     methods: {
+        datesObject: function(dateString) {
+            let dateDef = {}
+            let yearMonth = dateString.split("-")
+            let baseDate = new Date(yearMonth[1] + ' 1, ' + yearMonth[0])
+            const month = baseDate.toLocaleString('default', { month: 'long' });
+            dateDef['text'] = baseDate.getFullYear().toString().concat(' ', month)
+            dateDef['date'] = baseDate
+            return {dateString: dateDef}
+        },
+
         getValidation: function(frps, foreProbs) {
             let vali = foreProbs.map((forecast, i) => this.truePositives(forecast, frps[i]))
             return vali
@@ -194,7 +220,7 @@ export default {
         },
 
         getAnomalies: function(datas) {
-             let clim = this.probs['clim_probs']
+             let clim = this.probs['climatology']
              let anomaly = datas.map((x, i) => x - clim[i])
              return anomaly
         },
