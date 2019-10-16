@@ -17,15 +17,15 @@
     <div class="container">
       <div class="columns">
          <div class="column is-one-quarter">
-    <h1>SEAS5 forecast issued:</h1>
-              <select-option :options="Object.values(monthOptions)" 
-                             :selected="monthOptions[selectedMonth]" 
+    <h1>Forecast for:</h1>
+        <select-option :options="dates.map(x => x.text)" 
+                       :selected="dates.find(x => x.id === selectedMonth).text" 
                              @updateOption="updateSelectedMonth($event)"
                              ></select-option>
 
     <h1>lead time: </h1>
-          <select-option :options="Object.values(leadOptions)" 
-                         :selected="leadOptions[selectedLead]"
+          <select-option :options="Object.values(parseLead)" 
+                         :selected="getSelectedLead"
                          @updateOption="updateSelectedLead($event)"
                          ></select-option>
 
@@ -81,9 +81,9 @@ export default {
   data() {
     return {
       probs: {},
-      baseYear: '2019',
+      leadOptions: {},
+      dates: [],
       selectedMonth: '2019-9',
-      baseDate: {},
       selectedLead: '1',
       selectedProd: 'Forecast',
       selectedCompProd: 'Active fires',
@@ -99,22 +99,6 @@ export default {
           {text: 'Validation', longText: 'True and false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
       ],
 
-      monthOptions: {
-            '2019-7': 'July',
-            '2019-8': 'August',
-            '2019-9': 'September',
-            '2019-10': 'October',
-            '2019-11': 'November',
-            '2019-12': 'December',
-      },
-
-      leadOptions: {
-          '1': '1 month lead',
-          '2': '2 month lead',
-          '3': '3 month lead',
-          '4': '4 month lead',
-      },
-
       zoomTransform: {
         k: 1,
         x: 0,
@@ -125,23 +109,45 @@ export default {
 
   created() {
     this.lonLats = lonLats
-    this.baseDate = new Date(this.baseYear.concat(this.selectedMonth, '1'))
     this.probs = this.getProbs
     this.dates = this.parseDates
-      console.log(this.dates)
+    this.leadOptions = this.parseLead
+    console.log(this.dates)
   },
 
   computed: {
+      getSelectedLead: function() {
+          console.log('gettingSelectedLead')
+          console.log(this.leadOptions[this.selectedLead])
+          return this.leadOptions[this.selectedLead]
+      },
+
+      updateOptions: function() {
+      this.leadOptions = this.probs[this.selectedMonth]
+      },
 
       parseDates: function() {
+        let dateOptions = []
         let dateStrings = Object.keys(Probs)
-        let dateOptions = dateStrings.map(x => this.datesObject(x))
+        dateStrings.map((x, i) => dateOptions[i] = this.datesObject(x))
         return dateOptions
       },
 
+      parseLead: function() {
+          this.leadOptions = {}
+          let leadKeys = Object.keys(Probs[this.selectedMonth]['forecast'])
+          leadKeys.map(x => this.leadOptions[x] = x.concat(" month lead"))
+          console.log('parseLead')
+          this.validateSelectedLead
+          console.log(this.leadOptions[this.selectedLead])
+          console.log(this.leadOptions)
+          return this.leadOptions
+      },
+
       getProbs: function() {
+        console.log('getProbs')
+        console.log(Probs[this.selectedMonth])
         return Probs[this.selectedMonth]
-        this.getLeft
       },
 
       getProdText: function() {
@@ -163,6 +169,7 @@ export default {
      getRight: function() {
         let selProd = this.compOptions.find(x => x.text === this.selectedCompProd)
         let frps = Probs[this.selectedMonth][selProd.value]
+        console.log(frps)
         if (selProd.text === 'Validation') {
             let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
             let foreProbs = Probs[this.selectedMonth][selProd.value][this.selectedLead]
@@ -175,28 +182,37 @@ export default {
       },
 
       getDate: function() {
-        let baseDate = new Date(this.monthOptions[this.selectedMonth] + ' 1, ' + this.baseYear)
+      let baseDate = this.dates.find(x => x.id === this.selectedMonth).date
         const month = baseDate.toLocaleString('default', { month: 'long' });
         return baseDate.getFullYear().toString().concat(' ', month)
       },
 
       getSEAS5Date: function() {
-        let baseDate = new Date(this.monthOptions[this.selectedMonth] + ' 1, ' + this.baseYear)
-        let newDate = new Date(baseDate.setMonth(baseDate.getMonth() - parseInt(this.selectedLead) + 1));
+      let baseDate = this.dates.find(x => x.id === this.selectedMonth).date
+      let newDate = new Date(baseDate.setMonth(baseDate.getMonth() - parseInt(this.selectedLead) + 1));
         const month = newDate.toLocaleString('default', { month: 'long' });
         return newDate.getFullYear().toString().concat(' ', month)
       },
+
+      validateSelectedLead: function() {
+            if (!(this.selectedLead in this.leadOptions)) {
+                this.selectedLead = Object.keys(this.leadOptions)[0]
+            }
+            console.log('selLead', this.selectedLead)
+        },
+
     },
 
     methods: {
         datesObject: function(dateString) {
             let dateDef = {}
+            dateDef['id'] = dateString
             let yearMonth = dateString.split("-")
             let baseDate = new Date(yearMonth[1] + ' 1, ' + yearMonth[0])
             const month = baseDate.toLocaleString('default', { month: 'long' });
             dateDef['text'] = baseDate.getFullYear().toString().concat(' ', month)
             dateDef['date'] = baseDate
-            return {dateString: dateDef}
+            return dateDef
         },
 
         getValidation: function(frps, foreProbs) {
@@ -207,14 +223,11 @@ export default {
         truePositives: function(forecast, frp) {
             if (forecast > 49 && frp > 9) {
                 return 'TP'
-            }
-            if (forecast > 49 && frp < 10) {
+            } else if (forecast > 49 && frp < 10) {
                 return 'FP'
-            }
-            if (forecast < 50 && frp < 10) {
+            } else if (forecast < 50 && frp < 10) {
                 return 'TN'
-            }
-            if (forecast < 50 && frp > 9) {
+            } else if (forecast < 50 && frp > 9) {
                 return 'FN'
             }
         },
@@ -225,14 +238,15 @@ export default {
              return anomaly
         },
 
+
         updateSelectedLead: function(selected) {
           this.selectedLead = Object.keys(this.leadOptions)
                 .find(key => this.leadOptions[key] === selected);
         },
 
         updateSelectedMonth: function(selected) {
-          this.selectedMonth = Object.keys(this.monthOptions)
-                .find(key => this.monthOptions[key] === selected);
+          this.selectedMonth = this.dates
+                .find(x => x.text === selected).id;
         },
     },
 
