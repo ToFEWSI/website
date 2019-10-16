@@ -25,7 +25,7 @@
 
     <h1>lead time: </h1>
           <select-option :options="Object.values(parseLead)" 
-                         :selected="getSelectedLead"
+                         :selected="leadOptions[selectedLead]"
                          @updateOption="updateSelectedLead($event)"
                          ></select-option>
 
@@ -48,7 +48,7 @@
       <div class="columns">
          <div class="column is-one-quarter">
         <h1>Compare to: </h1>
-          <select-option :options="compOptions.map(a => a.text)" 
+          <select-option :options="parseProducts" 
                          :selected="selectedCompProd"
                          @updateOption="selectedCompProd = $event"
            ></select-option>
@@ -94,8 +94,8 @@ export default {
       ],
 
       compOptions: [
-          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
           {text: 'Climatology', longText: 'Fire occurrence probability based on ERA5 climate', value: 'climatology', thresholds: [10,30,50,70,90], shift: 0},
+          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
           {text: 'Validation', longText: 'True and false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
       ],
 
@@ -112,18 +112,12 @@ export default {
     this.probs = this.getProbs
     this.dates = this.parseDates
     this.leadOptions = this.parseLead
-    console.log(this.dates)
   },
 
   computed: {
       getSelectedLead: function() {
-          console.log('gettingSelectedLead')
-          console.log(this.leadOptions[this.selectedLead])
+          this.validateSelectedLead
           return this.leadOptions[this.selectedLead]
-      },
-
-      updateOptions: function() {
-      this.leadOptions = this.probs[this.selectedMonth]
       },
 
       parseDates: function() {
@@ -137,12 +131,22 @@ export default {
           this.leadOptions = {}
           let leadKeys = Object.keys(Probs[this.selectedMonth]['forecast'])
           leadKeys.map(x => this.leadOptions[x] = x.concat(" month lead"))
-          console.log('parseLead')
           this.validateSelectedLead
-          console.log(this.leadOptions[this.selectedLead])
-          console.log(this.leadOptions)
           return this.leadOptions
       },
+
+      parseProducts: function() {
+          this.availProducts = {}
+          let prodKeys = Object.keys(Probs[this.selectedMonth])
+          if (!(prodKeys.includes("frp"))) {
+              this.compOptions = this.compOptions.find(x => x.text === 'Climatology') 
+          }
+          console.log('prodkeys', prodKeys)
+          console.log(this.compOptions.map(x => x.text))
+          return this.compOptions.map(x => x.text)
+      },
+
+
 
       getProbs: function() {
         console.log('getProbs')
@@ -197,6 +201,7 @@ export default {
       validateSelectedLead: function() {
             if (!(this.selectedLead in this.leadOptions)) {
                 this.selectedLead = Object.keys(this.leadOptions)[0]
+                console.log('validating', Object.keys(this.leadOptions)[0])
             }
             console.log('selLead', this.selectedLead)
         },

@@ -4,6 +4,7 @@
       <div class="select is-primary" 
           v-click-outside="hide">
           <select v-model="selOption" @change="changeOption($event)">
+              <option disabled value="">Please select</option>
               <option v-for="option in options" :value="option">
               {{ option }}
               </option>
@@ -31,20 +32,32 @@ export default {
       isActive: false
     }
   },
+
   mounted() {
     console.log('selector mounted')
   },
-
+   
   methods: {
     hide() {
       if (this.isActive) {
         this.isActive = false
       }
     },
+
     changeOption(option) {
       let value = option.target.value
       console.log('option changed', value)
       this.$emit('updateOption', value)
+    },
+
+	setValue: function(selValue) {
+    	this.selOption = selValue;      
+    },
+  },
+  watch: {
+    // whenever question changes, this function will run
+    selected: function (newSelected, oldSelected) {
+    this.setValue(newSelected)
     }
   }
 }
