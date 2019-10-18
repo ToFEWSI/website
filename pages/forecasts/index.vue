@@ -67,7 +67,7 @@
 <script>
 /* @flow */
 import selectOption from '@/components/selectOption.vue'
-import Probs from '@/assets/forecast_.json'
+import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
 import BaseM from '@/components/BaseM.vue'
 
@@ -112,7 +112,6 @@ export default {
     this.lonLats = lonLats
     this.probs = this.getProbs
     this.dateOptions = this.parseDates
-    console.log(this.dateOptions)
     this.leadOptions = this.parseLead
     this.availProducts = this.parseProducts
   },
@@ -120,7 +119,6 @@ export default {
   computed: {
       parseDates: function() {
         this.dateOptions = {}
-        console.log('parseDates')
         let dateStrings = Object.keys(Probs)
         dateStrings.map(x => this.dateOptions[x] = this.getDateText(x))
         return this.dateOptions
@@ -136,13 +134,8 @@ export default {
 
       parseProducts: function() {
           let prodKeys = Object.keys(Probs[this.selectedMonth])
-          console.log('prodkeys', prodKeys)
-          console.log(this.selectedCompProd)
           if (prodKeys.length !== 3) {
-              console.log('here')
-              console.log(this.availProducts)
               this.availProducts = [this.compOptions.find(x => x.text === 'Climatology')]
-              console.log(this.availProducts)
               this.validateSelectedProd
               return this.availProducts.map(x => x.text)
           } else {
@@ -179,7 +172,6 @@ export default {
      getRight: function() {
         let selProd = this.availProducts.find(x => x.text === this.selectedCompProd)
         let frps = Probs[this.selectedMonth][selProd.value]
-        console.log(frps)
         if (selProd.text === 'Validation') {
             let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
             let foreProbs = Probs[this.selectedMonth][selProd.value][this.selectedLead]
@@ -209,18 +201,13 @@ export default {
       validateSelectedLead: function() {
             if (!(this.selectedLead in this.leadOptions)) {
                 this.selectedLead = Object.keys(this.leadOptions)[0]
-                console.log('validating', Object.keys(this.leadOptions)[0])
             }
-            console.log('selLead', this.selectedLead)
         },
 
      validateSelectedProd: function() {
             if (!(this.selectedCompProd in this.availProducts)) {
-                console.log(this.selectedCompProd)
                 this.selectedCompProd = 'Climatology'
-                console.log(this.selectedCompProd)
             }
-            console.log('selProd', this.selectedCompProd)
         },
 
     },
