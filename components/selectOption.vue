@@ -55,7 +55,7 @@ export default {
     },
   },
   watch: {
-    // whenever question changes, this function will run
+    // whenever selected changes, this function will run
     selected: function (newSelected, oldSelected) {
     this.setValue(newSelected)
     }
