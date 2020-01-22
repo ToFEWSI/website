@@ -43,7 +43,7 @@ export default {}
 <style>
 .bg {
   /* The image used */
-  background-image: url('../assets/borneo_20%.jpg');
+  background-image: url('../assets/borneo_20.jpg');
 
   /* Full height */
   height: 100%;
