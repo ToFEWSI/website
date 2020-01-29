@@ -1,7 +1,7 @@
 <template>
     <div class="box">
      <!-- Inner Content -->
-      <svg 
+      <svg
         style="overflow: hidden;"
         width="100%"
         height="100%"
