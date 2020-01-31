@@ -66,15 +66,16 @@
 
 <script>
 /* @flow */
-import selectOption from '@/components/selectOption.vue'
+import SelectOption from '@/components/SelectOption.vue'
 import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
 import BaseM from '@/components/BaseM.vue'
+import { mapActions } from 'vuex'
 
 export default {
 
   components: {
-    selectOption: selectOption,
+    SelectOption: SelectOption,
     BaseM: BaseM,
   },
 
@@ -109,6 +110,7 @@ export default {
   },
 
   created() {
+    this.$store.dispatch('selector/initProbs');
     this.lonLats = lonLats
     this.probs = this.getProbs
     this.dateOptions = this.parseDates
@@ -191,11 +193,11 @@ export default {
       },
 
       getSEAS5Date: function() {
-      let yearMonth = this.selectedMonth.split("-")
-      let startDate = new Date(yearMonth[1] + ' 1, ' + yearMonth[0])
-      let newDate = new Date(startDate.setMonth(startDate.getMonth() - parseInt(this.selectedLead) + 1))
-      let month = newDate.toLocaleString('default', { month: 'long' })
-      return month.concat(' ', newDate.getFullYear().toString())
+          let yearMonth = this.selectedMonth.split("-")
+          let startDate = new Date(yearMonth[1] + ' 1, ' + yearMonth[0])
+          let newDate = new Date(startDate.setMonth(startDate.getMonth() - parseInt(this.selectedLead) + 1))
+          let month = newDate.toLocaleString('default', { month: 'long' })
+          return month.concat(' ', newDate.getFullYear().toString())
       },
 
       validateSelectedLead: function() {
