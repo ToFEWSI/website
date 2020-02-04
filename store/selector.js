@@ -2,11 +2,11 @@ import Probs from '@/assets/forecast.json'
 import prodOptions from '@/assets/prodOpts.js'
 import compOptions from '@/assets/prodOpts.js'
 
-export const state = () => ({
+const state = () => ({
     probs: {},
     leadOptions: {},
-    availProducts: {},
-    dateOptions: {},
+    availProds: {},
+    availDates: {},
     selectedMonth: '2019-9',
     selectedLead: '1',
     selectedProd: 'Forecast',
@@ -56,18 +56,45 @@ export const mutations = {
     'SET_PROBS' (state, probs) {
         state.probs = probs;
     },
-    'SET_PROBS' (state, probs) {
-        state.probs = probs;
+    'SET_DATES' (state, dates) {
+        state.availDates = dates;
     },
-    'SET_PROBS' (state, probs) {
-        state.probs = probs;
+    'SET_LEAD_OPTIONS' (state, leadOptions) {
+        state.leadOptions = leadOptions;
     },
-}
+
+    'SET_AVAIL_PRODS' (state, availProds) {
+        state.availProds = availProds;
+    }
+};
 
 export const actions = {
     initProbs: ({commit}) => {
         commit('SET_PROBS', Probs);
-    }
-}
+    },
 
+    initDates: ({commit}, dates) => {
+        commit('SET_DATES', dates)
+    },
+
+    setLead: ({commit}, leadOptions) => {
+        commit('SET_LEAD_OPTIONS', leadOptions)
+    },
+
+    setAvailProds: ({commit}, availProds) => {
+        commit('SET_AVAIL_PRODS', availProds)
+    },
+
+};
+
+export const getters = {
+
+    availDates: state => {
+        return state.availDates;
+    },
+
+    availProds: state => {
+        return state.availProds;
+    },
+};
 

@@ -18,7 +18,7 @@
       <div class="columns">
          <div class="column is-one-quarter">
     <h1>Forecast for:</h1>
-        <select-option :options="Object.values(dateOptions)" 
+        <select-option :options="Object.values(this.availDates)" 
                        :selected="dateOptions[selectedMonth]" 
                              @updateOption="updateSelectedMonth($event)"
                              ></select-option>
@@ -70,7 +70,7 @@ import SelectOption from '@/components/SelectOption.vue'
 import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
 import BaseM from '@/components/BaseM.vue'
-import { mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
 
@@ -114,11 +114,19 @@ export default {
     this.lonLats = lonLats
     this.probs = this.getProbs
     this.dateOptions = this.parseDates
+    this.$store.dispatch('selector/initDates', this.dateOptions);
     this.leadOptions = this.parseLead
+    this.$store.dispatch('selector/setLead', this.parseLead);
+    this.$store.dispatch('selector/setAvailProds', this.parseProducts);
     this.availProducts = this.parseProducts
   },
 
   computed: {
+
+      ...mapGetters({
+          availDates: 'selector/availDates',
+      }),
+
       parseDates: function() {
         this.dateOptions = {}
         let dateStrings = Object.keys(Probs)
