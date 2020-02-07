@@ -1,6 +1,4 @@
 import Probs from '@/assets/forecast.json'
-import prodOptions from '@/assets/prodOpts.js'
-import compOptions from '@/assets/prodOpts.js'
 
 export const state = () => ({
     probs: {},
