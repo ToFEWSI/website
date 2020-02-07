@@ -2,7 +2,7 @@ import Probs from '@/assets/forecast.json'
 import prodOptions from '@/assets/prodOpts.js'
 import compOptions from '@/assets/prodOpts.js'
 
-const state = () => ({
+export const state = () => ({
     probs: {},
     leadOptions: {},
     availProds: {},
@@ -11,45 +11,6 @@ const state = () => ({
     selectedLead: '1',
     selectedProd: 'Forecast',
     selectedCompProd: 'Active fires',
-    prodOptions: [
-        {
-            text: 'Forecast',
-            longText: 'SEAS5-based fire occurrence probability',
-            value: 'forecast',
-            thresholds: [10,30,50,70,90],
-            shift: 0 
-        },
-        {
-            text: 'Anomaly',
-            longText: 'SEAS5 probability anomaly vs ERA5 climatology',
-            value: 'forecast',
-            thresholds: [-50, -10, -5, 5, 10, 50],
-            shift: 0
-        },
-    ],
-
-    compOptions: [
-        {
-            text: 'Climatology',
-            longText: '1985 - 2018 ERA5 climate-based fire occurrence probability',
-            value: 'climatology', thresholds: [10,30,50,70,90],
-            shift: 0
-        },
-        {
-            text: 'Active fires',
-            longText: 'MODIS Active fire count',
-            value: 'frp',
-            thresholds: [10,20,40,80,160],
-            shift: 0
-        },
-        {
-            text: 'Validation',
-            longText: 'TN - true negatives, TP - true positives, FN - false negatives, FP - false positives',
-            value: 'frp',
-            thresholds: ['TN', 'TP', 'FN', 'FP'],
-            shift: 18
-        },
-    ],
 })
 
 export const mutations = {
@@ -65,7 +26,23 @@ export const mutations = {
 
     'SET_AVAIL_PRODS' (state, availProds) {
         state.availProds = availProds;
-    }
+    },
+
+    'UPDATE_SELECTED_MONTH' (state, selected) {
+        state.selectedMonth = selected;
+    },
+
+    'UPDATE_SELECTED_LEAD' (state, selected) {
+        state.selectedLead = selected;
+    },
+
+    'UPDATE_SELECTED_PROD' (state, selected) {
+        state.selectedProd = selected;
+    },
+
+    'UPDATE_SELECTED_COMP_PROD' (state, selected) {
+        state.selectedCompProd = selected;
+    },
 };
 
 export const actions = {
@@ -85,9 +62,31 @@ export const actions = {
         commit('SET_AVAIL_PRODS', availProds)
     },
 
+    updateMonth: ({commit}, selected) => {
+        commit('UPDATE_SELECTED_MONTH', selected)
+        },
+
+    updateLead: ({commit}, selected) => {
+        commit('UPDATE_SELECTED_LEAD', selected)
+        },
+
+    updateProd: ({commit}, selected) => {
+        commit('UPDATE_SELECTED_PROD', selected)
+        },
+
+    updateCompProd: ({commit}, selected) => {
+        commit('UPDATE_SELECTED_COMP_PROD', selected)
+        },
+
+
+
 };
 
 export const getters = {
+
+    probs: state => {
+        return state.probs;
+    },
 
     availDates: state => {
         return state.availDates;
@@ -95,6 +94,22 @@ export const getters = {
 
     availProds: state => {
         return state.availProds;
+    },
+
+    selectedMonth: state => {
+        return state.selectedMonth;
+    },
+
+    selectedLead: state => {
+        return state.selectedLead;
+    },
+
+    selectedProd: state => {
+        return state.selectedProd;
+    },
+
+    selectedCompProd: state => {
+        return state.selectedCompProd;
     },
 };
 

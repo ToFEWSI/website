@@ -19,20 +19,20 @@
          <div class="column is-one-quarter">
     <h1>Forecast for:</h1>
         <select-option :options="Object.values(this.availDates)" 
-                       :selected="dateOptions[selectedMonth]" 
-                             @updateOption="updateSelectedMonth($event)"
-                             ></select-option>
+                       :selected="dateOptions[this.selectedMonth]" 
+                       @updateOption="updateSelectedMonth($event)"
+                       ></select-option>
 
     <h1>SEAS5 lead: </h1>
           <select-option :options="Object.values(parseLead)" 
-                         :selected="leadOptions[selectedLead]"
+                         :selected="leadOptions[this.selectedLead]"
                          @updateOption="updateSelectedLead($event)"
                          ></select-option>
 
     <h1>Prediction product: </h1>
           <select-option :options="prodOptions.map(a => a.text)" 
-                         :selected="selectedProd"
-                         @updateOption="selectedProd = $event"
+                         :selected="this.selectedProd"
+                         @updateOption="updateSelectedProd($event)"
                          ></select-option>
 
          </div>
@@ -49,8 +49,8 @@
          <div class="column is-one-quarter">
         <h1>Compare to: </h1>
           <select-option :options="parseProducts" 
-                         :selected="selectedCompProd"
-                         @updateOption="selectedCompProd = $event"
+                         :selected="this.selectedCompProd"
+                         @updateOption="updateSelectedCompProd($event)"
            ></select-option>
          </div>
          <div class="column">
@@ -67,8 +67,8 @@
 <script>
 /* @flow */
 import SelectOption from '@/components/SelectOption.vue'
-import Probs from '@/assets/forecast.json'
 import lonLats from '@/assets/geo/lonlats_fore.json'
+import { prodOptions, compOptions } from '@/assets/options'
 import BaseM from '@/components/BaseM.vue'
 import { mapGetters } from 'vuex'
 
@@ -81,26 +81,10 @@ export default {
 
   data() {
     return {
-      probs: {},
       leadOptions: {},
       availProducts: {},
       dateOptions: {},
-      selectedMonth: '2019-9',
-      selectedLead: '1',
-      selectedProd: 'Forecast',
-      selectedCompProd: 'Active fires',
       
-      prodOptions: [
-          {text: 'Forecast', longText: 'SEAS5-based fire occurrence probability', value: 'forecast', thresholds: [10,30,50,70,90], shift: 0},
-          {text: 'Anomaly', longText: 'SEAS5 probability anomaly vs ERA5 climatology', value: 'forecast',  thresholds: [-50, -10, -5, 5, 10, 50], shift: 0},
-      ],
-
-      compOptions: [
-          {text: 'Climatology', longText: '1985 - 2018 ERA5 climate-based fire occurrence probability', value: 'climatology', thresholds: [10,30,50,70,90], shift: 0},
-          {text: 'Active fires', longText: 'MODIS Active fire count', value: 'frp', thresholds: [10,20,40,80,160], shift: 0},
-          {text: 'Validation', longText: 'TN - true negatives, TP - true positives, FN - false negatives, FP - false positives', value: 'frp', thresholds: ['TN', 'TP', 'FN', 'FP'], shift: 18},
-      ],
-
       zoomTransform: {
         k: 1,
         x: 0,
@@ -112,10 +96,10 @@ export default {
   created() {
     this.$store.dispatch('selector/initProbs');
     this.lonLats = lonLats
-    this.probs = this.getProbs
+    this.prodOptions = prodOptions
+    this.compOptions = compOptions
     this.dateOptions = this.parseDates
     this.$store.dispatch('selector/initDates', this.dateOptions);
-    this.leadOptions = this.parseLead
     this.$store.dispatch('selector/setLead', this.parseLead);
     this.$store.dispatch('selector/setAvailProds', this.parseProducts);
     this.availProducts = this.parseProducts
@@ -124,26 +108,31 @@ export default {
   computed: {
 
       ...mapGetters({
+          probs: 'selector/probs',
           availDates: 'selector/availDates',
+          selectedMonth: 'selector/selectedMonth',
+          selectedLead: 'selector/selectedLead',
+          selectedProd: 'selector/selectedProd',
+          selectedCompProd: 'selector/selectedCompProd',
       }),
 
       parseDates: function() {
         this.dateOptions = {}
-        let dateStrings = Object.keys(Probs)
+        let dateStrings = Object.keys(this.probs)
         dateStrings.map(x => this.dateOptions[x] = this.getDateText(x))
         return this.dateOptions
       },
 
       parseLead: function() {
           this.leadOptions = {}
-          let leadKeys = Object.keys(Probs[this.selectedMonth]['forecast'])
+          let leadKeys = Object.keys(this.probs[this.selectedMonth]['forecast'])
           leadKeys.map(x => this.leadOptions[x] = x.concat(" month lead"))
           this.validateSelectedLead
           return this.leadOptions
       },
 
       parseProducts: function() {
-          let prodKeys = Object.keys(Probs[this.selectedMonth])
+          let prodKeys = Object.keys(this.probs[this.selectedMonth])
           if (prodKeys.length !== 3) {
               this.availProducts = [this.compOptions.find(x => x.text === 'Climatology')]
               this.validateSelectedProd
@@ -155,7 +144,7 @@ export default {
       },
 
       getProbs: function() {
-        return Probs[this.selectedMonth]
+        return this.probs[this.selectedMonth]
       },
 
       getCompText: function() {
@@ -170,7 +159,7 @@ export default {
 
       getLeft: function() {
         let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-        let datas = Probs[this.selectedMonth][selProd.value][this.selectedLead]
+        let datas = this.probs[this.selectedMonth][selProd.value][this.selectedLead]
           if (selProd.text === 'Anomaly') {
               datas = this.getAnomalies(datas)
           }
@@ -181,10 +170,10 @@ export default {
 
      getRight: function() {
         let selProd = this.availProducts.find(x => x.text === this.selectedCompProd)
-        let frps = Probs[this.selectedMonth][selProd.value]
+        let frps = this.probs[this.selectedMonth][selProd.value]
         if (selProd.text === 'Validation') {
             let selProd = this.prodOptions.find(x => x.text === this.selectedProd)
-            let foreProbs = Probs[this.selectedMonth][selProd.value][this.selectedLead]
+            let foreProbs = this.probs[this.selectedMonth][selProd.value][this.selectedLead]
             frps = this.getValidation(frps, foreProbs)
             let unique = frps.filter((item, i, ar) => ar.indexOf(item) === i)
           }
@@ -249,19 +238,29 @@ export default {
         },
 
         getAnomalies: function(datas) {
-             let clim = Probs[this.selectedMonth]['climatology']
+             let clim = this.probs[this.selectedMonth]['climatology']
              let anomaly = datas.map((x, i) => x - clim[i])
              return anomaly
         },
 
         updateSelectedLead: function(selected) {
-          this.selectedLead = Object.keys(this.leadOptions)
+            let selectedLead = Object.keys(this.leadOptions)
                 .find(key => this.leadOptions[key] === selected);
+            this.$store.dispatch('selector/updateLead', selectedLead);
         },
 
         updateSelectedMonth: function(selected) {
-          this.selectedMonth = Object.keys(this.dateOptions)
+            let selectedMonth = Object.keys(this.dateOptions)
                 .find(key => this.dateOptions[key] === selected);
+            this.$store.dispatch('selector/updateMonth', selectedMonth);
+        },
+
+        updateSelectedProd: function(selected) {
+            this.$store.dispatch('selector/updateProd', selected);
+        },
+
+        updateSelectedCompProd: function(selected) {
+            this.$store.dispatch('selector/updateCompProd', selected);
         },
     },
 
