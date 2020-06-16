@@ -9,7 +9,7 @@
       <section class="section">
       <div class="container is-size-3">
         <div class="content is-medium">
-      <p>Fire occurrence probabilities for the ongoing 2019 dry season in Indonesia produced by the ToFEWSI modelling system. The predictions are generated using Neural Network algorithm. The model is trained using ERA5 reanalysis weather, past forest cover change and map of peatland distribution in Indonesia. Forecast probabilities are computed using ECMWF SEAS5 model seasonal forecasts. Validation is performed against MODIS active fire observations. To find out more about the method see this <a href="https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview" target="_blank">EGU2019 poster</a>.</p>
+      <p>Fire occurrence probabilities for the 2019 dry season in Indonesia produced by the ToFEWSI modelling system. The predictions are generated using Neural Network algorithm. The model is trained using ERA5 reanalysis weather, past forest cover change, past fire occurrence observations and peatland distribution map in Indonesia. Forecast probabilities are computed using ECMWF SEAS5 model seasonal forecasts. Validation is performed against MODIS active fire observations. To find out more about the method see this <a href="https://drive.google.com/file/d/1OiLitt4IQf2cSLr6FV6UZH-rvEogaqRr/preview" target="_blank">EGU2019 poster</a>.</p>
     </div>
   </div>
   </section>

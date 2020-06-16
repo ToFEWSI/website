@@ -33,7 +33,7 @@ export const compOptions = [
         },
         {
             text: 'Validation',
-            longText: 'TN - true negatives, TP - true positives, FN - false negatives, FP - false positives',
+            longText: 'TN - true negatives, TP - true positives, FN - false negatives, FP - false positives (probability above 50% is considered as fire postive prediction)',
             value: 'frp',
             thresholds: ['TN', 'TP', 'FN', 'FP'],
             shift: 18
