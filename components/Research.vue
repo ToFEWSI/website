@@ -16,7 +16,7 @@
             <p>
             <strong>{{ rea.Title }}</strong>
             <br>
-              {{ rea.What }} by <strong>{{ rea.Author }}</strong> {{ rea.How }} at <strong> {{rea.Where}}</strong>
+              {{ rea.What }} by <strong>{{ rea.Author }}</strong> {{ rea.How }} <strong> {{rea.Where}}</strong>
             <br>
             </p>
             <p>
